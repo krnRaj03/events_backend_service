@@ -1,0 +1,15 @@
+#ignore virtualenv
+menv/
+
+# Ignore database file
+db.sqlite3
+
+# Ignore media files uploaded by users
+media/
+
+# Ignore logs and other temporary files
+*.log
+*.pyc
+__pycache__/
+*.swp
+.DS_Store

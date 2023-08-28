@@ -7,6 +7,7 @@ from .views import (
     UserProfileView,
     SendResetPasswordEmailView,
     ResetPasswordView,
+    UserProfileUpdateView,
 )
 
 urlpatterns = [
@@ -24,4 +25,5 @@ urlpatterns = [
         ResetPasswordView.as_view(),
         name="rest-password",
     ),
+    path("update-profile/", UserProfileUpdateView.as_view(), name="update-profile"),
 ]

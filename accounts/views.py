@@ -15,6 +15,7 @@ from .serializers import (
     UserProfileSerializer,
     SendResetPasswordEmailSerializer,
     ResetPasswordSerializer,
+    UserProfileUpdateSerializer,
 )
 from utilities import (
     password_check,
@@ -93,7 +94,13 @@ class LoginView(APIView):
             if user is not None:
                 token = get_tokens_for_user(user)
                 return Response(
-                    {"message": "Login successful!", "token": token},
+                    {
+                        "message": "Login successful!",
+                        "status": user.status,
+                        "role": user.role,
+                        "is_user": user.is_user,
+                        "token": token,
+                    },
                     status=status.HTTP_200_OK,
                 )
             else:
@@ -141,4 +148,23 @@ class ResetPasswordView(APIView):
             return Response(
                 {"message": "Password reset successful!"}, status=status.HTTP_200_OK
             )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserProfileUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [UserRenderer]
+
+    def get(self, request):
+        user = request.user
+        serializer = UserProfileUpdateSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        user = request.user
+        serializer = UserProfileUpdateSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            user.status = "profile_updated"
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

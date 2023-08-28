@@ -89,32 +89,47 @@ class SendResetPasswordEmailSerializer(serializers.Serializer):
 
 class ResetPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, style={"input_type": "password"})
-    confirm_password = serializers.CharField(write_only=True, style={"input_type": "password"})
+    confirm_password = serializers.CharField(
+        write_only=True, style={"input_type": "password"}
+    )
 
     class Meta:
         fields = ["password", "confirm_password"]
 
     def validate(self, attrs):
         try:
-          uid=self.context.get("uid")
-          token=self.context.get("token")
-          if attrs["password"] != attrs["confirm_password"]:
-              raise serializers.ValidationError(
-                  {"password_errors": "Password & confirm password didn't match."}
-              )
-          id=smart_str(urlsafe_base64_decode(uid))
-          user=CustomUser.objects.get(id=id)
-          if not PasswordResetTokenGenerator().check_token(user, token):
-              raise serializers.ValidationError(
-                  {"errors": "Invalid token! Please request a new one."}
-              )
-          user.set_password(attrs["password"])
-          user.save()
-          return attrs
-        
+            uid = self.context.get("uid")
+            token = self.context.get("token")
+            if attrs["password"] != attrs["confirm_password"]:
+                raise serializers.ValidationError(
+                    {"password_errors": "Password & confirm password didn't match."}
+                )
+            id = smart_str(urlsafe_base64_decode(uid))
+            user = CustomUser.objects.get(id=id)
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                raise serializers.ValidationError(
+                    {"errors": "Invalid token! Please request a new one."}
+                )
+            user.set_password(attrs["password"])
+            user.save()
+            return attrs
+
         except DjangoUnicodeDecodeError:
             PasswordResetTokenGenerator().check_token(user, token)
             raise serializers.ValidationError(
                 {"error": "Invalid token! Please request a new one."}
             )
-            
+
+
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            "first_name",
+            "last_name",
+            "date_of_birth",
+            "gender",
+            "job_title",
+            "email",
+            "mobile_no",
+        ]

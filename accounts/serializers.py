@@ -3,18 +3,11 @@ from django.utils.encoding import force_bytes, smart_str, DjangoUnicodeDecodeErr
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
-from .models import CustomUser, Address
-from utilities import send_forget_password_email
+from .models import CustomUser
+from utilities import send_email_with_sendgrid
+
 
 # create a serializer class for the user model
-
-
-class AddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address  # Replace with your actual Address model
-        fields = "__all__"
-
-
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, style={"input_type": "password"})
     confirm_password = serializers.CharField(
@@ -46,24 +39,6 @@ class LoginSerializer(serializers.ModelSerializer):
         fields = ["email", "password"]
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    """Foregin key serializer for user address"""
-
-    user_address = AddressSerializer(many=True)
-
-    class Meta:
-        model = CustomUser
-        fields = [
-            "id",
-            "email",
-            "first_name",
-            "last_name",
-            "role",
-            "user_image",
-            "user_address",
-        ]
-
-
 class SendResetPasswordEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=250)
 
@@ -76,7 +51,7 @@ class SendResetPasswordEmailSerializer(serializers.Serializer):
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = PasswordResetTokenGenerator().make_token(user)
             link = "http://localhost:3000/reset-password/" + uid + "/" + token
-            send_forget_password_email(
+            send_email_with_sendgrid(
                 user.email, f"Please click this link to Reset your password! {link}"
             )
             return attrs
@@ -121,15 +96,35 @@ class ResetPasswordSerializer(serializers.Serializer):
             )
 
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        exclude = [
+            "password",
+            "is_superuser",
+            "is_staff",
+            "is_active",
+            "mobile_otp",
+            "email_otp",
+            "password_reset_token",
+        ]
+
+
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
+            "email",
             "first_name",
             "last_name",
-            "date_of_birth",
-            "gender",
-            "job_title",
-            "email",
             "mobile_no",
+            "user_image",
+            "date_of_birth",
+            "address_line1",
+            "address_line2",
+            "city",
+            "state",
+            "country",
+            "pincode",
+            "status",
         ]

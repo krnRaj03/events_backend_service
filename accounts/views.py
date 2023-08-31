@@ -19,7 +19,7 @@ from .serializers import (
 )
 from utilities import (
     password_check,
-    send_email_via_sendinblue,
+    send_email_with_sendgrid,
     get_tokens_for_user,
     send_forget_password_email,
 )
@@ -50,7 +50,7 @@ class SignupView(APIView):
                 otp = str(random.randint(100000, 999999))
                 user.email_otp = otp
                 # Send OTP to user's email address
-                send_email_via_sendinblue(user.email, "Your OTP is {}".format(otp))
+                send_email_with_sendgrid(user.email, "Your OTP is {}".format(otp))
                 # Save user
                 user.save()
 
@@ -62,7 +62,7 @@ class SignupView(APIView):
 
 
 class VerifyOTPView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def post(self, request):
         otp = request.data.get("otp")
@@ -110,18 +110,6 @@ class LoginView(APIView):
                 )
 
 
-class UserProfileView(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        serializer = UserProfileSerializer(request.user)
-        print(serializer.data)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-        # except CustomUser.DoesNotExist:
-        #     return Response({"message":"User doesn't exists"}, status=status.HTTP_400_BAD_REQUEST)
-
-
 class SendResetPasswordEmailView(APIView):
     renderer_classes = [UserRenderer]
 
@@ -151,20 +139,51 @@ class ResetPasswordView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserProfileUpdateView(APIView):
-    permission_classes = [IsAuthenticated]
+class UserProfileView(APIView):
     renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-        serializer = UserProfileUpdateSerializer(user)
+        serializer = UserProfileSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request):
-        user = request.user
-        serializer = UserProfileUpdateSerializer(user, data=request.data, partial=True)
-        if serializer.is_valid(raise_exception=True):
-            user.status = "profile_updated"
+
+class UserProfileUpdateView(APIView):
+    """This view is used to update user profile i.e basic info, address, etc."""
+
+    """We can put "required fields" check in react here while booking ticket"""
+
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            user = CustomUser.objects.get(pk=pk)
+        except CustomUser.DoesNotExist:
+            return Response(
+                {"error": "User not found!"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, pk):
+        try:
+            user = CustomUser.objects.get(pk=pk)
+        except CustomUser.DoesNotExist:
+            return Response(
+                {"error": "User not found!"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer = UserProfileUpdateSerializer(user, data=request.data)
+
+        if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            print(serializer.data)
+            user.status = "profile_updated"
+            user.save()
+            return Response(
+                {"message": "Profile updated successfully!"},
+                status=status.HTTP_200_OK,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

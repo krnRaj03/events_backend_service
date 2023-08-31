@@ -7,9 +7,8 @@ from django.contrib.auth.hashers import check_password, make_password
 # from .utilities import generate_otp,send_email_via_sendinblue
 import uuid
 
+
 # Create your models here.
-
-
 class CustomUser(AbstractBaseUser):
     GENDER_CHOICES = (
         ("M", "Male"),
@@ -35,7 +34,6 @@ class CustomUser(AbstractBaseUser):
         ("organizer", "Organizer"),
     )
     username = None
-    user_id = models.CharField(max_length=100, blank=True)
     email = models.EmailField(unique=True)
     password_reset_token = models.CharField(max_length=100, blank=True)
     email_otp = models.CharField(max_length=6, blank=True)
@@ -59,6 +57,12 @@ class CustomUser(AbstractBaseUser):
     # signup_pending,signup_done,deleted,blocked
     date_created = models.DateTimeField(auto_now_add=True)
     user_image = models.ImageField(upload_to="user_images/", blank=True, null=True)
+    address_line1 = models.CharField(max_length=100, blank=True)
+    address_line2 = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    state = models.CharField(max_length=100, blank=True)
+    country = models.CharField(max_length=100, blank=True)
+    pincode = models.CharField(max_length=100, blank=True)
 
     objects = UserManager()
 
@@ -100,16 +104,3 @@ class CustomUser(AbstractBaseUser):
         Checks if the given raw password matches the user's stored password hash.
         """
         return check_password(raw_password, self.password)
-
-
-class Address(models.Model):
-    user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="user_address"
-    )
-    address_line1 = models.CharField(max_length=100, blank=True)
-    address_line2 = models.CharField(max_length=100, blank=True)
-    city = models.CharField(max_length=100, blank=True)
-    state = models.CharField(max_length=100, blank=True)
-    country = models.CharField(max_length=100, blank=True)
-    pincode = models.CharField(max_length=100, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)

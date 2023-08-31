@@ -1,4 +1,9 @@
-from common_config import SENDINBLUE_API_KEY, SENDINBLUE_API_URL
+from common_config import (
+    SENDINBLUE_API_KEY,
+    SENDINBLUE_API_URL,
+    SENDGRID_API_KEY,
+    SENDGRID_API_URL,
+)
 import requests
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -79,3 +84,27 @@ def send_forget_password_email(to, body):
         print("Email sent successfully!")
     else:
         print("Failed to send email. Status Code: {}".format(response.status_code))
+
+
+def send_email_with_sendgrid(to_email, content):
+    headers = {
+        "Authorization": f"Bearer {SENDGRID_API_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    data = {
+        "personalizations": [
+            {"to": [{"email": to_email}], "subject": "Test Email from EVENTS.az"}
+        ],
+        "from": {"email": "mhertz.az@gmail.com"},
+        "content": [{"type": "text/plain", "value": content}],
+    }
+
+    try:
+        response = requests.post(SENDGRID_API_URL, json=data, headers=headers)
+        response.raise_for_status()  # Raise an error for HTTP errors
+        print("Email sent successfully.")  # Print statement added here
+        return True  # Email sent successfully
+    except requests.exceptions.RequestException as e:
+        print("Error sending email:", e)
+        return False

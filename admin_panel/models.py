@@ -1,5 +1,4 @@
 from django.db import models
-from accounts.models import CustomUser, Address
 import uuid
 
 
@@ -21,9 +20,17 @@ class Organizer(models.Model):
     contact_person_email = models.EmailField(max_length=100)
     contact_person_mobile_no = models.CharField(max_length=10)
     contact_person_designation = models.CharField(max_length=100)
+    address_line1 = models.CharField(max_length=100)
+    address_line2 = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    pincode = models.CharField(max_length=100)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
-    address_id = models.ForeignKey(Address, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.organizer_name
 
 
 class Events(models.Model):
@@ -32,15 +39,18 @@ class Events(models.Model):
     events_description = models.CharField(max_length=100)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    venue = models.CharField(max_length=200)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     total_seats = models.IntegerField()
-    address_id = models.ForeignKey(Address, on_delete=models.CASCADE)
     organizer_id = models.ForeignKey(Organizer, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.events_name + " " + str(self.organizer_id.organizer_name)
 
-class TicketInfo:
-    ticket_id = models.UUIDField(primary_key=True, default=uuid.uuid4())
+
+class TicketInfo(models.Model):
+    ticket_id = models.AutoField(primary_key=True)
     ticket_type = models.CharField(max_length=100)
     ticket_price = models.IntegerField()
     ticket_description = models.CharField(max_length=100)
@@ -51,29 +61,32 @@ class TicketInfo:
     date_updated = models.DateTimeField(auto_now=True)
     events_id = models.ForeignKey(Events, on_delete=models.CASCADE)
 
-
-class Bookings(models.Model):
-    booking_id = models.AutoField(primary_key=True)
-    ticket_id = models.ForeignKey(TicketInfo, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    event_id = models.ForeignKey(Events, on_delete=models.CASCADE)
-    booking_date = models.DateTimeField(auto_now_add=True)
-    booking_status = models.CharField(max_length=100)
-    payment_id = models.CharField(max_length=100, default=uuid.uuid4())
-    total_scanned = models.AutoField()
-    total_booked = models.AutoField()
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return self.ticket_type
 
 
-class Payment(models.Model):
-    payment_id = models.UUIDField(primary_key=True, default=uuid.uuid4())
-    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    event_id = models.ForeignKey(Events, on_delete=models.CASCADE)
-    payment_type = models.CharField(max_length=100)
-    payment_status = models.CharField(max_length=100)
-    payment_date = models.DateTimeField(auto_now_add=True)
-    payment_amount = models.IntegerField()
-    booking_id = models.ForeignKey(Bookings, on_delete=models.CASCADE)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
+# class Bookings(models.Model):
+#     booking_id = models.AutoField(primary_key=True)
+#     ticket_id = models.ForeignKey(TicketInfo, on_delete=models.CASCADE)
+#     user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+#     event_id = models.ForeignKey(Events, on_delete=models.CASCADE)
+#     booking_date = models.DateTimeField(auto_now_add=True)
+#     booking_status = models.CharField(max_length=100)
+#     payment_id = models.CharField(max_length=100, default=uuid.uuid4())
+#     total_scanned = models.AutoField()
+#     total_booked = models.AutoField()
+#     date_created = models.DateTimeField(auto_now_add=True)
+#     date_updated = models.DateTimeField(auto_now=True)
+
+
+# class Payment(models.Model):
+#     payment_id = models.UUIDField(primary_key=True, default=uuid.uuid4())
+#     user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+#     event_id = models.ForeignKey(Events, on_delete=models.CASCADE)
+#     payment_type = models.CharField(max_length=100)
+#     payment_status = models.CharField(max_length=100)
+#     payment_date = models.DateTimeField(auto_now_add=True)
+#     payment_amount = models.IntegerField()
+#     booking_id = models.ForeignKey(Bookings, on_delete=models.CASCADE)
+#     date_created = models.DateTimeField(auto_now_add=True)
+#     date_updated = models.DateTimeField(auto_now=True)

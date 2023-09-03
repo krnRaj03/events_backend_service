@@ -24,6 +24,7 @@ from utilities import (
     send_forget_password_email,
 )
 from .renderers import UserRenderer
+from admin_panel.models import Events, TicketInfo, Sponsors
 
 
 # Create your views here.
@@ -43,7 +44,6 @@ class SignupView(APIView):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-
             else:
                 user = serializer.save()
                 # Generate and save OTP
@@ -51,11 +51,10 @@ class SignupView(APIView):
                 user.email_otp = otp
                 # Send OTP to user's email address
                 send_email_with_sendgrid(user.email, "Your OTP is {}".format(otp))
-                # Save user
                 user.save()
 
                 return Response(
-                    {"message": "OTP sent to your email."},
+                    {"message": "User registered successfully!OTP sent to email"},
                     status=status.HTTP_201_CREATED,
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

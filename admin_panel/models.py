@@ -1,4 +1,5 @@
 from django.db import models
+from accounts.models import CustomUser
 import uuid
 
 
@@ -43,10 +44,11 @@ class Events(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     total_seats = models.IntegerField()
-    organizer_id = models.ForeignKey(Organizer, on_delete=models.CASCADE)
+    organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE)
+    user = models.ManyToManyField(CustomUser)
 
     def __str__(self):
-        return self.events_name + " " + str(self.organizer_id.organizer_name)
+        return str(self.events_name)
 
 
 class TicketInfo(models.Model):
@@ -65,6 +67,47 @@ class TicketInfo(models.Model):
         return self.ticket_type
 
 
+class Sponsors:
+    sponsor_id = models.AutoField(primary_key=True)
+    sponsor_name = models.CharField(max_length=100)
+    sponsor_description = models.CharField(max_length=100)
+    sponsor_email = models.EmailField(max_length=100)
+    sponsor_mobile_no = models.CharField(max_length=10)
+    sponsor_address_line1 = models.CharField(max_length=100)
+    sponsor_address_line2 = models.CharField(max_length=100)
+    sponsor_city = models.CharField(max_length=100)
+    sponsor_state = models.CharField(max_length=100)
+    sponsor_country = models.CharField(max_length=100)
+    sponsor_pincode = models.CharField(max_length=100)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+    events_id = models.ForeignKey(Events, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.sponsor_name
+
+
+# class Speakers(models.Model):
+#     speaker_id = models.AutoField(primary_key=True)
+#     speaker_name = models.CharField(max_length=100)
+#     speaker_description = models.CharField(max_length=100)
+#     speaker_email = models.EmailField(max_length=100)
+#     speaker_mobile_no = models.CharField(max_length=10)
+#     speaker_address_line1 = models.CharField(max_length=100)
+#     speaker_address_line2 = models.CharField(max_length=100)
+#     speaker_city = models.CharField(max_length=100)
+#     speaker_state = models.CharField(max_length=100)
+#     speaker_country = models.CharField(max_length=100)
+#     speaker_pincode = models.CharField(max_length=100)
+#     speaker_image = models.URLField(max_length=200, blank=True, null=True)
+#     date_created = models.DateTimeField(auto_now_add=True)
+#     date_updated = models.DateTimeField(auto_now=True)
+#     events = models.ForeignKey(Events, on_delete=models.CASCADE)
+
+#     def __str__(self):
+#         return str(self.speaker_name) + " || " + str(self.events.events_name)
+
+
 # class Bookings(models.Model):
 #     booking_id = models.AutoField(primary_key=True)
 #     ticket_id = models.ForeignKey(TicketInfo, on_delete=models.CASCADE)
@@ -73,8 +116,8 @@ class TicketInfo(models.Model):
 #     booking_date = models.DateTimeField(auto_now_add=True)
 #     booking_status = models.CharField(max_length=100)
 #     payment_id = models.CharField(max_length=100, default=uuid.uuid4())
-#     total_scanned = models.AutoField()
-#     total_booked = models.AutoField()
+#     # total_scanned = models.AutoField()
+#     # total_booked = models.AutoField()
 #     date_created = models.DateTimeField(auto_now_add=True)
 #     date_updated = models.DateTimeField(auto_now=True)
 

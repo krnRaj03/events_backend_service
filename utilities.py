@@ -6,9 +6,11 @@ from common_config import (
 )
 import requests
 from rest_framework_simplejwt.tokens import RefreshToken
+import random
+import string
 
 
-# Password check function
+# Password check function for users
 def password_check(password):
     if len(password) < 8:
         return False
@@ -96,7 +98,7 @@ def send_email_with_sendgrid(to_email, content):
         "personalizations": [
             {"to": [{"email": to_email}], "subject": "Test Email from EVENTS.az"}
         ],
-        "from": {"email": "mhertz.az@gmail.com"},
+        "from": {"email": "krnraj002@gmail.com"},
         "content": [{"type": "text/plain", "value": content}],
     }
 
@@ -108,3 +110,35 @@ def send_email_with_sendgrid(to_email, content):
     except requests.exceptions.RequestException as e:
         print("Error sending email:", e)
         return False
+
+
+def generate_random_password(length=10):
+    if length < 4:
+        raise ValueError("Password length must be at least 4 characters")
+
+    lowercase_letters = string.ascii_lowercase
+    uppercase_letter = random.choice(string.ascii_uppercase)
+    digit = random.choice(string.digits)
+    symbol = random.choice(string.punctuation)
+
+    # Ensure that the remaining characters in the password are lowercase letters
+    remaining_length = length - 4
+    password = [random.choice(lowercase_letters) for _ in range(remaining_length)]
+
+    # Shuffle the password characters to make it random
+    random.shuffle(password)
+
+    # Insert the uppercase letter, digit, and symbol at random positions
+    password.insert(random.randint(0, remaining_length), uppercase_letter)
+    password.insert(random.randint(0, remaining_length), digit)
+    password.insert(random.randint(0, remaining_length), symbol)
+
+    # Convert the password list to a string
+    password = "".join(password)
+
+    return password
+
+
+# # Example usage:
+# password = generate_random_password()
+# print(password)

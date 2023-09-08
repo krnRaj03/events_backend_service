@@ -30,6 +30,7 @@ class CustomUser(AbstractBaseUser):
     ROLE_CHOICES = (
         ("speaker", "Speaker"),
         ("moderator", "Moderator"),
+        ("guest", "Guest"),
         ("sponsor", "Sponsor"),
         ("organizer", "Organizer"),
     )
@@ -62,6 +63,14 @@ class CustomUser(AbstractBaseUser):
     state = models.CharField(max_length=100, blank=True)
     country = models.CharField(max_length=100, blank=True)
     pincode = models.CharField(max_length=100, blank=True)
+
+    linkedin_url = models.URLField(max_length=200, blank=True)
+    twitter_url = models.URLField(max_length=200, blank=True)
+    facebook_url = models.URLField(max_length=200, blank=True)
+    instagram_url = models.URLField(max_length=200, blank=True)
+    bio = models.TextField(max_length=500, blank=True)
+    panel_no = models.CharField(max_length=100, blank=True)
+    topic = models.CharField(max_length=100, blank=True)
 
     objects = UserManager()
 

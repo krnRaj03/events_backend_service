@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Form</title>
+</head>
+<body>
+    <h2>Payment Information</h2>
+    <form action="/process_payment" method="post">
+        <label for="amount">Amount:</label>
+        <input type="text" id="amount" name="amount" required><br><br>
+
+        <label for="currency">Currency:</label>
+        <input type="text" id="currency" name="currency" required><br><br>
+
+        <label for="card_number">Card Number:</label>
+        <input type="text" id="card_number" name="card_number" required><br><br>
+
+        <label for="card_exp_month">Expiration Month:</label>
+        <input type="text" id="card_exp_month" name="card_exp_month" required><br><br>
+
+        <label for="card_exp_year">Expiration Year:</label>
+        <input type="text" id="card_exp_year" name="card_exp_year" required><br><br>
+
+        <label for="card_cvc">CVC:</label>
+        <input type="text" id="card_cvc" name="card_cvc" required><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

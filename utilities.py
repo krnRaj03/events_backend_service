@@ -8,6 +8,8 @@ import requests
 from rest_framework_simplejwt.tokens import RefreshToken
 import random
 import string
+import boto3
+from botocore.exceptions import ClientError
 
 
 # Password check function for users
@@ -54,38 +56,6 @@ def get_tokens_for_user(user):
         "refresh": str(refresh),
         "access": str(refresh.access_token),
     }
-
-
-# Send email using SendinBlue API
-def send_email_via_sendinblue(to, body):
-    headers = {"Content-Type": "application/json", "api-key": SENDINBLUE_API_KEY}
-    data = {
-        "to": [{"email": to}],
-        "subject": "Welcome to Events Az!",
-        "htmlContent": body,
-        "sender": {"name": "Your Name", "email": "krnraj002@gmail.com"},
-    }
-    response = requests.post(SENDINBLUE_API_URL, headers=headers, json=data)
-    if response.status_code == 201:
-        print("Email sent successfully!")
-    else:
-        print("Failed to send email. Status Code: {}".format(response.status_code))
-
-
-# Send email (Forgot Password) using SendinBlue API
-def send_forget_password_email(to, body):
-    headers = {"Content-Type": "application/json", "api-key": SENDINBLUE_API_KEY}
-    data = {
-        "to": [{"email": to}],
-        "subject": "Forget Password Mail.",
-        "htmlContent": body,
-        "sender": {"name": "Your Name", "email": "krnraj002@gmail.com"},
-    }
-    response = requests.post(SENDINBLUE_API_URL, headers=headers, json=data)
-    if response.status_code == 201:
-        print("Email sent successfully!")
-    else:
-        print("Failed to send email. Status Code: {}".format(response.status_code))
 
 
 def send_email_with_sendgrid(to_email, content):
@@ -139,6 +109,88 @@ def generate_random_password(length=10):
     return password
 
 
-# # Example usage:
-# password = generate_random_password()
-# print(password)
+def upload_S3_image(folder_name, request, image_name):
+    Access_key = "AKIASNPAKV5UAXCNWAG4"
+    Secret_key = "JpjQdrihL8KoWHoGQae2eGMbOyIaDXw8fnKwN+7W"
+
+    try:
+        s3_session = boto3.Session(
+            aws_access_key_id=Access_key,
+            aws_secret_access_key=Secret_key,
+            region_name="us-east-1",
+        )
+        s3_client = s3_session.client("s3")
+        bucket_name = "events-bucket-az"  # Just the bucket name without any folder path
+
+        # Get the uploaded file from the request
+        uploaded_file = request.FILES["image"]
+        # Specify the S3 key with the folder path and image name
+        s3_key = folder_name + image_name
+
+        # Upload the file object to S3
+        s3_client.upload_fileobj(uploaded_file, bucket_name, s3_key)
+
+        # Generate the S3 URL
+        s3_url = f"https://{bucket_name}.s3.amazonaws.com/{s3_key}"
+
+        return True, s3_url
+    except Exception as e:
+        return {"message": str(e)}
+
+
+# def create_order(amount):
+#     PAYRIFF_API_KEY = "982A46D2D237430493F4E603D2C588CE"
+#     PAYRIFF_URL = "https://api.payriff.com/api/v2/createOrder"
+
+#     headers = {
+#         "Authorization": f"{PAYRIFF_API_KEY}",
+#         "Content-Type": "application/json",
+#     }
+#     data = {
+#         "body": {
+#             "amount": amount,
+#             "approveURL": "https://16a5-5-134-55-140.ngrok-free.app/approveURL/",
+#             "cancelURL": "string",
+#             "cardUuid": "string",
+#             "currencyType": "AZN",
+#             "declineURL": "string",
+#             "description": "string",
+#             "directPay": True,
+#             "installmentPeriod": 0,
+#             "installmentProductType": "BIRKART",
+#             "language": "AZ",
+#             "senderCardUID": "string",
+#         },
+#         "merchant": "ES1092133",
+#     }
+#     try:
+#         response = requests.post(PAYRIFF_URL, headers=headers, data=json.dumps(data))
+#         response.raise_for_status()  # Raise an exception for 4xx and 5xx status codes
+#         response_data = response.json()
+#         return response_data
+#     except requests.exceptions.RequestException as e:
+#         print("Request failed:", e)
+#         return None
+
+
+# def upload_S3_image(folder_name, image_path, image_name):
+#     Access_key = "AKIASNPAKV5UAXCNWAG4"
+#     Secret_key = "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"
+#     try:
+#         s3_session = boto3.Session(
+#             aws_access_key_id=Access_key,
+#             aws_secret_access_key=Secret_key,
+#             region_name="us-east-1",
+#         )
+#         s3_client = s3_session.client("s3")
+#         bucket_name = "events-bucket-az"  # Just the bucket name without any folder path
+#         file_name = (
+#             image_path  # Replace with the actual file path on your local machine
+#         )
+#         s3_key = folder_name + image_name  # Include the folder path in the S3 key
+#         response = s3_client.upload_fileobj(file_name, bucket_name, s3_key)
+#         s3_url = f"https://{bucket_name}.s3.amazonaws.com/{s3_key}"
+#         print(s3_url)
+#         return True
+#     except Exception as e:
+#         return {"message": "No data found"}

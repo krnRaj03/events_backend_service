@@ -6,7 +6,11 @@ from django.http import JsonResponse
 
 from .models import Organizer, Events
 from accounts.models import CustomUser
-from utilities import send_email_with_sendgrid, generate_random_password
+from utilities import (
+    send_email_with_sendgrid,
+    generate_random_password,
+    upload_S3_image,
+)
 
 
 # Create your views here.
@@ -65,7 +69,7 @@ def event(request):
             events_description=events_description,
             start_date=start_date,
             end_date=end_date,
-            venue=venue,
+            venue_link=venue,
             date_created=timezone.now(),
             date_updated=timezone.now(),
             total_seats=total_seats,
@@ -98,7 +102,17 @@ def Speaker(request):
         speaker_pincode = request.POST["pincode"]
         events_id = request.POST.get("event_id")
         password = generate_random_password()
+        speaker_image = request.FILES.get("image").name
         events_instance = Events.objects.get(events_id=events_id)
+        if speaker_image:
+            folder_name = "speaker_images/"
+            result, s3_url = upload_S3_image(folder_name, request, speaker_image)
+            print("Image uploaded successfully")
+            if result:
+                print("Image uploaded successfully")
+                print("S3 URL:", s3_url)
+        else:
+            print("Image not uploaded")
 
         speaker = CustomUser.objects.create(
             email=speaker_email,
@@ -117,6 +131,7 @@ def Speaker(request):
             state=speaker_state,
             country=speaker_country,
             pincode=speaker_pincode,
+            user_image=s3_url,
             date_created=datetime.now(),
         )
         send_email_with_sendgrid(
@@ -141,9 +156,10 @@ def count_speaker(request):
     return JsonResponse({"count": len(speaker_list), "list": speaker_list})
 
 
+# def aprroveURL(request):
+#     return render(request, "temp_payment.html")
+
+
 #     # Convert QuerySet to a list of dictionaries
 #     speaker_list = list(speakers)
 #     return JsonResponse({"count": count_speaker, "list": speaker_list})
-
-
-

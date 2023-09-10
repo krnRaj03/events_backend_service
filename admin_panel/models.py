@@ -1,4 +1,5 @@
 from django.db import models
+from accounts.models import CustomUser
 import uuid
 
 
@@ -34,19 +35,33 @@ class Organizer(models.Model):
 
 
 class Events(models.Model):
-    events_id = models.AutoField(primary_key=True)
-    events_name = models.CharField(max_length=100)
-    events_description = models.CharField(max_length=100)
+    EVENT_TYPE_CHOICES = (
+        ("technology", "Technology"),
+        ("finance", "Finance"),
+        ("healthcare", "Healthcare"),
+        ("education", "Education"),
+        ("other", "Other"),
+    )
+    event_id = models.AutoField(primary_key=True)
+    event_name = models.CharField(max_length=200)
+    event_type = models.CharField(
+        max_length=50, choices=EVENT_TYPE_CHOICES, null=True, blank=True
+    )
+    event_agenda = models.CharField(max_length=200)
+    event_description = models.CharField(max_length=200)
+    event_image = models.URLField(max_length=200, blank=True, null=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    venue = models.CharField(max_length=200)
+    number_of_panels = models.IntegerField(blank=True, null=True)
+    venue_link = models.URLField(max_length=200)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     total_seats = models.IntegerField()
-    organizer_id = models.ForeignKey(Organizer, on_delete=models.CASCADE)
+    organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE)
+    user = models.ManyToManyField(CustomUser)
 
     def __str__(self):
-        return self.events_name + " " + str(self.organizer_id.organizer_name)
+        return str(self.events_name)
 
 
 class TicketInfo(models.Model):
@@ -54,15 +69,55 @@ class TicketInfo(models.Model):
     ticket_type = models.CharField(max_length=100)
     ticket_price = models.IntegerField()
     ticket_description = models.CharField(max_length=100)
-    total_tickets = models.IntegerField()
-    total_tickets_sold = models.IntegerField()
-    total_tickets_scanned = models.IntegerField()
+    tickets_available = models.IntegerField()
+    tickets_sold = models.IntegerField()
+    tickets_scanned = models.IntegerField()
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
-    events_id = models.ForeignKey(Events, on_delete=models.CASCADE)
+    events = models.ForeignKey(Events, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.ticket_type
+
+
+class Sponsors(models.Model):
+    SPONSOR_TYPE_CHOICES = (
+        ("technology", "Technology"),
+        ("media", "Media"),
+        ("technical", "Technical"),
+        ("strategic", "Strategic"),
+    )
+    sponsor_id = models.AutoField(primary_key=True)
+    sponsor_type = models.CharField(max_length=50, choices=SPONSOR_TYPE_CHOICES)
+    sponsor_name = models.CharField(max_length=100)
+    sponsor_image = models.URLField(max_length=200, blank=True, null=True)
+    sponsor_description = models.CharField(max_length=100)
+    sponsor_email = models.EmailField(max_length=100)
+    sponsor_mobile_no = models.CharField(max_length=10)
+    address_line1 = models.CharField(max_length=100)
+    address_line2 = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    pincode = models.CharField(max_length=100)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+    events = models.ForeignKey(Events, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.sponsor_name
+
+
+class Notifications(models.Model):
+    notification_id = models.AutoField(primary_key=True)
+    notification_title = models.CharField(max_length=100)
+    notification_content = models.TextField(max_length=200)
+    notification_image = models.URLField(max_length=200, blank=True, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.notification_title + " " + str(self.notification_date)
 
 
 # class Bookings(models.Model):
@@ -73,8 +128,8 @@ class TicketInfo(models.Model):
 #     booking_date = models.DateTimeField(auto_now_add=True)
 #     booking_status = models.CharField(max_length=100)
 #     payment_id = models.CharField(max_length=100, default=uuid.uuid4())
-#     total_scanned = models.AutoField()
-#     total_booked = models.AutoField()
+#     # total_scanned = models.AutoField()
+#     # total_booked = models.AutoField()
 #     date_created = models.DateTimeField(auto_now_add=True)
 #     date_updated = models.DateTimeField(auto_now=True)
 

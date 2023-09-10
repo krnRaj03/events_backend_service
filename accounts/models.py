@@ -30,6 +30,7 @@ class CustomUser(AbstractBaseUser):
     ROLE_CHOICES = (
         ("speaker", "Speaker"),
         ("moderator", "Moderator"),
+        ("guest", "Guest"),
         ("sponsor", "Sponsor"),
         ("organizer", "Organizer"),
     )
@@ -44,10 +45,9 @@ class CustomUser(AbstractBaseUser):
     last_name = models.CharField(max_length=100, blank=True)
     date_of_birth = models.DateField(_("dateofbirth"), blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
-    job_title = models.CharField(max_length=20, choices=JOB_TITLE_CHOICES, blank=True)
 
     is_active = models.BooleanField(_("active"), default=True)
-    role = models.CharField(max_length=20, choices=JOB_TITLE_CHOICES, blank=True)
+    job_title = models.CharField(max_length=20, choices=JOB_TITLE_CHOICES, blank=True)
     is_user = models.BooleanField(_("user status"), default=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, blank=True)
     is_staff = models.BooleanField(_("staff status"), default=False)
@@ -56,13 +56,21 @@ class CustomUser(AbstractBaseUser):
     status = models.CharField(max_length=20, blank=True)
     # signup_pending,signup_done,deleted,blocked
     date_created = models.DateTimeField(auto_now_add=True)
-    user_image = models.ImageField(upload_to="user_images/", blank=True, null=True)
+    user_image = models.URLField(max_length=200, blank=True)
     address_line1 = models.CharField(max_length=100, blank=True)
     address_line2 = models.CharField(max_length=100, blank=True)
     city = models.CharField(max_length=100, blank=True)
     state = models.CharField(max_length=100, blank=True)
     country = models.CharField(max_length=100, blank=True)
     pincode = models.CharField(max_length=100, blank=True)
+
+    linkedin_url = models.URLField(max_length=200, blank=True)
+    twitter_url = models.URLField(max_length=200, blank=True)
+    facebook_url = models.URLField(max_length=200, blank=True)
+    instagram_url = models.URLField(max_length=200, blank=True)
+    bio = models.TextField(max_length=500, blank=True)
+    panel_no = models.CharField(max_length=100, blank=True)
+    topic = models.CharField(max_length=100, blank=True)
 
     objects = UserManager()
 

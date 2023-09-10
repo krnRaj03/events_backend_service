@@ -6,6 +6,8 @@ from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 import random
+from django.http import JsonResponse, HttpResponse
+import json
 
 # Project/app level imports
 from .models import CustomUser
@@ -17,13 +19,9 @@ from .serializers import (
     ResetPasswordSerializer,
     UserProfileUpdateSerializer,
 )
-from utilities import (
-    password_check,
-    send_email_with_sendgrid,
-    get_tokens_for_user,
-    send_forget_password_email,
-)
+from utilities import password_check, send_email_with_sendgrid, get_tokens_for_user
 from .renderers import UserRenderer
+from admin_panel.models import Events, TicketInfo, Sponsors
 
 
 # Create your views here.
@@ -43,7 +41,6 @@ class SignupView(APIView):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-
             else:
                 user = serializer.save()
                 # Generate and save OTP
@@ -51,11 +48,10 @@ class SignupView(APIView):
                 user.email_otp = otp
                 # Send OTP to user's email address
                 send_email_with_sendgrid(user.email, "Your OTP is {}".format(otp))
-                # Save user
                 user.save()
 
                 return Response(
-                    {"message": "OTP sent to your email."},
+                    {"message": "User registered successfully!OTP sent to email"},
                     status=status.HTTP_201_CREATED,
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -187,3 +183,22 @@ class UserProfileUpdateView(APIView):
                 status=status.HTTP_200_OK,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class approve_url(APIView):
+    # Check if the request method is POST
+    def post(self, request):
+        # Parse the request body as JSON
+        payload = json.loads(request.body)
+        # Access the payload data
+
+        print(payload)
+        return HttpResponse("OK")
+
+
+# class approveURL(APIView):
+#     def post(self, request):
+#         # Extract the JSON data from the POST request
+#         data = request.dict()
+#         print(data)
+#         return JsonResponse({"message": "Webhook received successfully"})

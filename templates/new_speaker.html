@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Speaker Registration</title>
+</head>
+
+<body>
+  <h2>User Registration</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="first_name">First Name:</label>
+    <input type="text" id="first_name" name="first_name"><br><br>
+
+    <label for="last_name">Last Name:</label>
+    <input type="text" id="last_name" name="last_name"><br><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="mobile_no">Mobile No:</label>
+    <input type="text" id="mobile_no" name="mobile_no"><br><br>
+
+    <label for="image">Image:</label>
+    <input type="file" id="image" name="image"><br><br>
+
+    <label for="date_of_birth">Date of Birth:</label>
+    <input type="date" id="date_of_birth" name="date_of_birth" format="dd/MM/yyyy"><br><br>
+
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender">
+      <option value="M">Male</option>
+      <option value="F">Female</option>
+      <option value="O">Other</option>
+    </select><br><br>
+
+    <label for="job_title">Job Title:</label>
+    <select id="job_title" name="job_title">
+      <option value="manager">Manager</option>
+      <option value="developer">Developer</option>
+      <option value="designer">Designer</option>
+      <option value="analyst">Analyst</option>
+      <option value="tester">Tester</option>
+      <option value="hr">HR</option>
+      <option value="accountant">Accountant</option>
+      <option value="sales">Sales</option>
+      <option value="student">Student</option>
+      <option value="other">Other</option>
+    </select><br><br>
+
+
+    <label for="role">Role:</label>
+    <select id="role" name="role">
+      <option value="speaker">Speaker</option>
+      <option value="moderator">Moderator</option>
+      <option value="guest">Guest</option>
+      <option value="sponsor">Sponsor</option>
+      <option value="organizer">Organizer</option>
+    </select><br><br>
+    <label for="event_id">Event:</label>
+    <select id="event_id" name="event_id" required>
+      <option value="">Select an Event</option>
+      {% for event in events %}
+      <option value="{{ event.events_id }}">{{ event.events_name }}</option>
+      {% endfor %}
+    </select>
+    <br><br>
+    <label for="address_line1">Address Line 1:</label>
+    <input type="text" id="address_line1" name="address_line1"><br><br>
+
+    <label for="address_line2">Address Line 2:</label>
+    <input type="text" id="address_line2" name="address_line2"><br><br>
+
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city"><br><br>
+
+    <label for="state">State:</label>
+    <input type="text" id="state" name="state"><br><br>
+
+    <label for="country">Country:</label>
+    <input type="text" id="country" name="country"><br><br>
+
+    <label for="pincode">Pincode:</label>
+    <input type="text" id="pincode" name="pincode"><br><br>
+
+    <input type="submit" value="Register">
+  </form>
+
+
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Add Event</title>
+</head>
+
+<body>
+  <h1>Add Event</h1>
+  <form method="post">
+    {% csrf_token %} <!-- Include this if you're using Django's CSRF protection -->
+
+    <label for="events_name">Event Name:</label>
+    <input type="text" id="events_name" name="events_name" required>
+    <br>
+
+    <label for="events_description">Event Description:</label>
+    <input type="text" id="events_description" name="events_description" required>
+    <br>
+
+    <label for="start_date">Start Date and Time:</label>
+    <input type="datetime-local" id="start_date" name="start_date" required>
+    <br>
+
+    <label for="end_date">End Date and Time:</label>
+    <input type="datetime-local" id="end_date" name="end_date" required>
+    <br>
+
+    <label for="venue">Venue:</label>
+    <input type="text" id="venue" name="venue" required>
+    <br>
+
+    <label for="total_seats">Total Seats:</label>
+    <input type="number" id="total_seats" name="total_seats" required>
+    <br>
+
+    <label for="organizer_id">Organizer:</label>
+    <select id="organizer_id" name="organizer_id" required>
+      <option value="">Select an Organizer</option>
+      {% for organizer in organizers %}
+      <option value="{{ organizer.organizer_id }}">{{ organizer.organizer_name }}</option>
+      {% endfor %}
+    </select>
+    <br>
+
+    <input type="submit" value="Submit">
+  </form>
+</body>
+
+</html>

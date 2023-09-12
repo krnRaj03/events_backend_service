@@ -1,0 +1,411 @@
+{% extends 'panel/admin_home.html' %}
+
+{% load static %}
+
+{% block main %}
+<style>
+  /* Style for the form sections */
+  .form-section {
+    display: none;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+
+  /* Style for the active (open) form section */
+  .active {
+    display: block;
+  }
+</style>
+
+<link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Events</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Add Events</li>
+          </ol>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+
+    <button id="showForm1" class="btn btn-primary mx-2">Add organizer</button>
+    <button id="showForm2" class="btn btn-primary mx-2">Add Events</button>
+    <button id="showForm3" class="btn btn-primary mx-2">Add Speakers/ Moderators</button>
+    <button id="showForm4" class="btn btn-primary mx-2">Add Sponsor</button>
+
+    <!-- ADD ORGANIZATION FORM -->
+    <form method="post" id="form1" class="form-section my-2">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-6">
+          <label for="organizer_name">Organizer Name:</label>
+          <input type="text" id="organizer_name" name="organizer_name" required><br><br>
+        </div>
+        <div class="col-6">
+          <label for="industry_type">Industry Type:</label>
+          <select id="industry_type" name="industry_type" required>
+            <option value="technology">Technology</option>
+            <option value="finance">Finance</option>
+            <option value="healthcare">Healthcare</option>
+            <option value="education">Education</option>
+            <option value="other">Other</option>
+          </select><br><br>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <label for="organizer_email">Organizer Email:</label>
+          <input type="email" id="organizer_email" name="organizer_email" required><br><br>
+        </div>
+        <div class="col-6">
+          <label for="organizer_mobile_no">Organizer Mobile No:</label>
+          <input type="tel" id="organizer_mobile_no" name="organizer_mobile_no" required><br><br>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <label for="contact_person_name">Contact Person Name:</label>
+          <input type="text" id="contact_person_name" name="contact_person_name" required><br><br>
+        </div>
+        <div class="col-6">
+          <label for="contact_person_email">Contact Person Email:</label>
+          <input type="email" id="contact_person_email" name="contact_person_email" required><br><br>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <label for="contact_person_mobile_no">Contact Person Mobile No:</label>
+          <input type="tel" id="contact_person_mobile_no" name="contact_person_mobile_no" required><br>
+        </div>
+        <div class="col-6">
+          <label for="contact_person_designation">Contact Person Designation:</label>
+          <input type="text" id="contact_person_designation" name="contact_person_designation" required><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="address_line1">Organizer Address Line 1:</label>
+          <input type="text" id="address_line1" name="address_line1" required><br><br>
+        </div>
+        <div class="col-6">
+          <label for="address_line2">Organizer Address Line 2:</label>
+          <input type="text" id="address_line2" name="address_line2"><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="city">Organizer City:</label>
+          <input type="text" id="city" name="city" required><br><br>
+        </div>
+        <div class="col-6">
+          <label for="state">Organizer State:</label>
+          <input type="text" id="state" name="state" required><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6"> <label for="country">Organizer Country:</label>
+          <input type="text" id="country" name="country" required><br><br>
+        </div>
+        <div class="col-6"><label for="pincode">Organizer Pincode:</label>
+          <input type="text" id="pincode" name="pincode" required><br><br>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6"></div>
+        <div class="col-6"></div>
+      </div>
+
+      <input type="submit" value="Submit" class="btn btn-success" name="org_form">
+    </form>
+
+    <!-- ADD EVENTS FORM -->
+    <form id="form2" method="post" class="form-section my-2" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-6">
+          <label for="event_name">Event Name:</label>
+          <input type="text" id="event_name" name="event_name" required><br><br>
+        </div>
+        <div class="col-6">
+          <label for="event_type">Event Type:</label>
+          <select id="event_type" name="event_type" required>
+            <option value="conference">Conference</option>
+            <option value="forum">Forum</option>
+            <option value="exhibition">Exhibition</option>
+            <option value="education">Education</option>
+            <option value="other">Other</option>
+          </select><br><br>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <label for="event_agenda">Event Agenda:</label>
+          <input type="text" id="event_agenda" name="event_agenda" required><br><br>
+        </div>
+        <div class="col-6">
+          <label for="event_description">Event Description:</label>
+          <input type="text" id="event_description" name="event_description" required><br><br>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <label for="event_image">Event Image (URL):</label>
+          <input type="file" id="event_image" name="image" placeholder="Optional"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="start_date">Start Date:</label>
+          <input type="datetime-local" id="start_date" name="start_date" required><br><br>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <label for="end_date">End Date:</label>
+          <input type="datetime-local" id="end_date" name="end_date" required><br><br>
+        </div>
+        <div class="col-6">
+          <label for="number_of_panels">Number of Panels:</label>
+          <input type="number" id="number_of_panels" name="number_of_panels" placeholder="Optional"><br><br>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <label for="venue_link">Venue Link (URL):</label>
+          <input type="url" id="venue_link" name="venue_link" required><br><br>
+        </div>
+        <div class="col-6">
+          <label for="total_seats">Total Seats:</label>
+          <input type="number" id="total_seats" name="total_seats" required><br><br>
+        </div>
+      </div>
+      <label for="organizer_id">Organizer:</label>
+      <select id="organizer_id" name="organizer_id" required>
+        <option value="">Select an Organizer</option>
+        {% for organizer in organizers %}
+        <option value="{{ organizer.organizer_id }}">{{ organizer.organizer_name }}</option>
+        {% endfor %}
+      </select>
+      <br>
+      <input type="submit" value="Submit" class="btn btn-success" name="event_form">
+    </form>
+
+    <!-- ADD SPEAKERS/MODERATORS FORM -->
+    <form id="form3" method="post" class="form-section my-2" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-6">
+          <label for="first_name">First Name:</label>
+          <input type="text" id="first_name" name="first_name"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="last_name">Last Name:</label>
+          <input type="text" id="last_name" name="last_name"><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required><br><br>
+        </div>
+        <div class="col-6">
+          <label for="mobile_no">Mobile No:</label>
+          <input type="text" id="mobile_no" name="mobile_no"><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="image">Image:</label>
+          <input type="file" id="image" name="image"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="date_of_birth">Date of Birth:</label>
+          <input type="date" id="date_of_birth" name="date_of_birth" format="dd/MM/yyyy"><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="gender">Gender:</label>
+          <select id="gender" name="gender">
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+            <option value="O">Other</option>
+          </select><br><br>
+        </div>
+        <div class="col-6">
+          <label for="job_title">Job Title:</label>
+          <select id="job_title" name="job_title">
+            <option value="manager">Manager</option>
+            <option value="developer">Developer</option>
+            <option value="designer">Designer</option>
+            <option value="analyst">Analyst</option>
+            <option value="tester">Tester</option>
+            <option value="hr">HR</option>
+            <option value="accountant">Accountant</option>
+            <option value="sales">Sales</option>
+            <option value="student">Student</option>
+            <option value="other">Other</option>
+          </select><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="role">Role:</label>
+          <select id="role" name="role">
+            <option value="speaker">Speaker</option>
+            <option value="moderator">Moderator</option>
+            <option value="guest">Guest</option>
+            <option value="sponsor">Sponsor</option>
+            <option value="organizer">Organizer</option>
+          </select><br><br>
+        </div>
+        <div class="col-6">
+          <label for="event_id">Event:</label>
+          <select id="event_id" name="event_id" required>
+            <option value="">Select an Event</option>
+            {% for event in events %}
+            <option value="{{ event.event_id }}">{{ event.event_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <label for="bio">Bio:</label>
+          <input type="text" id="bio" name="speaker_bio"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="panel">Panel no:</label>
+          <input type="text" id="panel" name="speaker_panel"><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="topic">Topic</label>
+          <input type="text" id="topic" name="speaker_topic"><br><br>
+        </div>
+        <div class="col-6">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <label for="LIP">LinkedIn Profile Link:</label>
+          <input type="url" id="LIP" name="linkedin"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="TP">Twitter Profile Link:</label>
+          <input type="url" id="TP" name="twitter"><br><br>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <label for="FBP">Facebook Profile Link:</label>
+          <input type="url" id="FBP" name="facebook"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="IGP">Instagram Profile Link:</label>
+          <input type="url" id="IGP" name="instagram"><br><br>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-6">
+          <label for="address_line1">Address Line 1:</label>
+          <input type="text" id="address_line1" name="address_line1"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="address_line2">Address Line 2:</label>
+          <input type="text" id="address_line2" name="address_line2"><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="city">City:</label>
+          <input type="text" id="city" name="city"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="state">State:</label>
+          <input type="text" id="state" name="state"><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="country">Country:</label>
+          <input type="text" id="country" name="country"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="pincode">Pincode:</label>
+          <input type="text" id="pincode" name="pincode"><br><br>
+        </div>
+      </div>
+      <input type="submit" value="Submit" class="btn btn-success" name="speaker_form">
+    </form>
+
+    <form id="form4" class="form-section my-2" enctype="multipart/form-data">
+
+      <label for="field4">Field 4:</label>
+      <input type="text" id="field4" name="field4">
+      <!-- Add more fields as needed -->
+      <button type="submit">Submit Form 4</button>
+    </form>
+
+  </section>
+  <!-- /.content -->
+</div>
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+
+<script>
+  // JavaScript to handle form visibility
+  const forms = document.querySelectorAll('.form-section');
+  const buttons = [
+    document.getElementById('showForm1'),
+    document.getElementById('showForm2'),
+    document.getElementById('showForm3'),
+    document.getElementById('showForm4'),
+  ];
+
+  buttons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      // Toggle the visibility of the corresponding form
+      forms[index].classList.toggle('active');
+
+      // Hide other forms
+      forms.forEach((form, i) => {
+        if (i !== index) {
+          form.classList.remove('active');
+        }
+      });
+    });
+  });
+</script>
+
+{% endblock %}

@@ -27,8 +27,8 @@ class Organizer(models.Model):
     state = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
     pincode = models.CharField(max_length=100)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField()
+    date_updated = models.DateTimeField()
 
     def __str__(self):
         return self.organizer_name
@@ -36,9 +36,9 @@ class Organizer(models.Model):
 
 class Events(models.Model):
     EVENT_TYPE_CHOICES = (
-        ("technology", "Technology"),
-        ("finance", "Finance"),
-        ("healthcare", "Healthcare"),
+        ("conference", "Conference"),
+        ("forum", "Forum"),
+        ("exhibition", "Exhibition"),
         ("education", "Education"),
         ("other", "Other"),
     )
@@ -54,14 +54,14 @@ class Events(models.Model):
     end_date = models.DateTimeField()
     number_of_panels = models.IntegerField(blank=True, null=True)
     venue_link = models.URLField(max_length=200)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField()
+    date_updated = models.DateTimeField()
     total_seats = models.IntegerField()
     organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE)
     user = models.ManyToManyField(CustomUser)
 
     def __str__(self):
-        return str(self.events_name)
+        return str(self.event_name)
 
 
 class TicketInfo(models.Model):

@@ -8,6 +8,7 @@ from .views import (
     ResetPasswordView,
     UserProfileView,
     UserProfileUpdateView,
+    CreateOrderTicketView,
     approve_url,
 )
 
@@ -30,6 +31,11 @@ urlpatterns = [
         "update-profile/<int:pk>",
         UserProfileUpdateView.as_view(),
         name="update-profile",
+    ),
+    path(
+        "create-payment-order/<int:customer_pk>/<int:ticket_pk>/",
+        CreateOrderTicketView.as_view(),
+        name="create-order-ticket",
     ),
     path(
         "approveURL/",

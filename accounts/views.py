@@ -19,7 +19,12 @@ from .serializers import (
     ResetPasswordSerializer,
     UserProfileUpdateSerializer,
 )
-from utilities import password_check, send_email_with_sendgrid, get_tokens_for_user
+from utilities import (
+    password_check,
+    send_email_with_sendgrid,
+    get_tokens_for_user,
+    create_order,
+)
 from .renderers import UserRenderer
 from admin_panel.models import Events, TicketInfo, Sponsors
 
@@ -185,15 +190,55 @@ class UserProfileUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class CreateOrderTicketView(APIView):
+    renderer_classes = [UserRenderer]  # You should define UserRenderer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, customer_pk, ticket_pk):
+        amount = request.data.get("amount")
+        try:
+            user = CustomUser.objects.get(pk=customer_pk)
+            ticket = TicketInfo.objects.get(pk=ticket_pk)
+            amount = ticket.ticket_price
+        except CustomUser.DoesNotExist:
+            return Response(
+                {"error": "User not found!"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except TicketInfo.DoesNotExist:
+            return Response(
+                {"error": "TicketInfo not found!"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        # Create an order
+        order = create_order(amount)
+        return JsonResponse(
+            {"message": "Order created successfully", "order": order}, status=200
+        )
+
+
 class approve_url(APIView):
     # Check if the request method is POST
     def post(self, request):
-        # Parse the request body as JSON
-        payload = json.loads(request.body)
-        # Access the payload data
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+            payload = data.get("payload", {})
 
-        print(payload)
-        return HttpResponse("OK")
+            # Extract and print the desired information
+            order_id = payload.get("orderID")
+            session_id = payload.get("sessionId")
+            transaction_type = payload.get("transactionType")
+            # Add more fields as needed
+
+            # Print the information to the console
+            print(f"Order ID: {order_id}")
+            print(f"Session ID: {session_id}")
+            print(f"Transaction Type: {transaction_type}")
+            # Print more fields as needed
+
+            return JsonResponse({"message": "Data received successfully"}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
 
 
 # class approveURL(APIView):

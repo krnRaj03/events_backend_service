@@ -25,6 +25,8 @@
   integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
@@ -48,11 +50,14 @@
 
     <button id="showForm1" class="btn btn-primary mx-2">Add organizer</button>
     <button id="showForm2" class="btn btn-primary mx-2">Add Events</button>
-    <button id="showForm3" class="btn btn-primary mx-2">Add Speakers/ Moderators</button>
-    <button id="showForm4" class="btn btn-primary mx-2">Add Sponsor</button>
+    <button id="showForm3" class="btn btn-primary mx-2">Add Panels</button>
+
+    <button id="showForm4" class="btn btn-primary mx-2">Add Speakers/ Moderators</button>
+    <button id="showForm5" class="btn btn-primary mx-2">Add Tickets</button>
+    <button id="showForm6" class="btn btn-primary mx-2">Add Sponsor</button>
 
     <!-- ADD ORGANIZATION FORM -->
-    <form method="post" id="form1" class="form-section my-2">
+    <form method="post" id="form1" class="form-section my-2" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="row">
         <div class="col-6">
@@ -214,8 +219,20 @@
       <input type="submit" value="Submit" class="btn btn-success" name="event_form">
     </form>
 
-    <!-- ADD SPEAKERS/MODERATORS FORM -->
+    <!-- ADD PANELS FORM -->
     <form id="form3" method="post" class="form-section my-2" enctype="multipart/form-data">
+      <div class="row">
+        <div>
+          <label></label>
+        </div>
+        <div>
+
+        </div>
+      </div>
+    </form>
+
+    <!-- ADD SPEAKERS/MODERATORS FORM -->
+    <form id="form4" method="post" class="form-section my-2" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="row">
         <div class="col-6">
@@ -369,12 +386,120 @@
       <input type="submit" value="Submit" class="btn btn-success" name="speaker_form">
     </form>
 
-    <form id="form4" class="form-section my-2" enctype="multipart/form-data">
+    <!-- ADD TICKETS FORM -->
+    <form id="form5" method="post" class="form-section my-2" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-6">
+          <label for="ticket_type">Ticket Type:</label>
+          <select id="ticket_type" name="ticket_type" required>
+            <option value="with_food">With Food</option>
+            <option value="without_food">Without Food</option>
+            <option value="online">Online</option>
+            <option value="guest">Guest</option>
+          </select><br><br>
+        </div>
+        <div class="col-6">
+          <label for="ticket_price">Ticket Price:</label>
+          <input type="number" name="ticket_price" id="ticket_price" required><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="ticket_description">Ticket Description:</label>
+          <input type="text" name="ticket_description" id="ticket_description"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="tickets_available">Tickets Available:</label>
+          <input type="number" name="tickets_available" id="tickets_available" required><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="event_id">Event:</label>
+          <select id="event_id" name="event_id" required>
+            <option value="">Select an Event</option>
+            {% for event in events %}
+            <option value="{{ event.event_id }}">{{ event.event_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-6">
+        </div>
+      </div>
+      <input type="submit" value="Submit" class="btn btn-success" name="ticket_form">
+    </form>
 
-      <label for="field4">Field 4:</label>
-      <input type="text" id="field4" name="field4">
-      <!-- Add more fields as needed -->
-      <button type="submit">Submit Form 4</button>
+    <!-- ADD SPONSOR FORM -->
+    <form id="form6" method="post" class="form-section my-2" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-6">
+          <label for="id_sponsor_type">Sponsor Type:</label>
+          <select id="ticket_type" name="ticket_type" required>
+            <option value="">Select an option</option>
+            <option value="sponsors">Sponsors</option>
+            <option value="main_sponsors">Main Sponsors</option>
+            <option value="partners">Partners</option>
+            <option value="media_partners">Media Partners</option>
+          </select><br><br>
+        </div>
+        <div class="col-6">
+          <label for="id_sponsor_name">Sponsor Name:</label>
+          <input type="text" name="sponsor_name" id="id_sponsor_name"><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="id_sponsor_image">Sponsor Image:</label>
+          <input type="file" name="sponsor_image" id="id_sponsor_image"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="id_sponsor_description">Sponsor Description:</label>
+          <input type="text" name="sponsor_description" id="id_sponsor_description"><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="id_sponsor_email">Sponsor Email:</label>
+          <input type="email" name="sponsor_email" id="id_sponsor_email"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="id_sponsor_mobile_no">Sponsor Mobile No:</label>
+          <input type="text" name="sponsor_mobile_no" id="id_sponsor_mobile_no"><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="id_address_line1">Address Line 1:</label>
+          <input type="text" name="address_line1" id="id_address_line1"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="id_address_line2">Address Line 2:</label>
+          <input type="text" name="address_line2" id="id_address_line2"><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="id_city">City:</label>
+          <input type="text" name="city" id="id_city"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="id_state">State:</label>
+          <input type="text" name="state" id="id_state"><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="id_country">Country:</label>
+          <input type="text" name="country" id="id_country"><br><br>
+        </div>
+        <div class="col-6">
+          <label for="id_pincode">Pincode:</label>
+          <input type="text" name="pincode" id="id_pincode"><br><br>
+        </div>
+      </div>
+      <input type="submit" value="Submit" class="btn btn-success" name="sponsor_form">
     </form>
 
   </section>
@@ -391,6 +516,8 @@
     document.getElementById('showForm2'),
     document.getElementById('showForm3'),
     document.getElementById('showForm4'),
+    document.getElementById('showForm5'),
+    document.getElementById('showForm6'),
   ];
 
   buttons.forEach((button, index) => {

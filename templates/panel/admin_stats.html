@@ -4,6 +4,7 @@
 
 {% block main %}
 <!-- AdminLTE -->
+
 <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
 <!-- BOOTSTRAP 5 -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -36,24 +37,32 @@
     <table id="example" class="table table-striped" style="width:100%">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Position</th>
-          <th>Office</th>
-          <th>Age</th>
-          <th>Start date</th>
-          <th>Salary</th>
+          <th>Event Name</th>
+          <th>Event Start Date</th>
+          <th>Event End Date</th>
+          <th>Total Panels</th>
+          <th>Events Agenda</th>
+          <th>Event Type</th>
+          <th>Edit</th>
+          <th>Delete</th>
         </tr>
       </thead>
       <tbody>
+        {% for e in events %}
+
         <tr>
-          <td>Tiger Nixon</td>
-          <td>System Architect</td>
-          <td>Edinburgh</td>
-          <td>61</td>
-          <td>2011-04-25</td>
-          <td>$320,800</td>
+          <td>{{e.event_name}}</td>
+          <td>{{e.start_date}}</td>
+          <td>{{e.end_date}}</td>
+          <td>{{e.number_of_panels}}</td>
+          <td>{{e.event_agenda}}</td>
+          <td>{{e.event_type}}</td>
+          <td> <button class="btn btn-primary"><a href="{% url 'edit_event' e.event_id %}"
+                style="color: aliceblue;">Edit</a></button></td>
+          <td> <button class="btn btn-primary"><a href="{% url 'delete_event' e.event_id %}"
+                style="color: aliceblue;">Delete</a></button></td>
         </tr>
-        <tr>
+        <!-- <tr>
           <td>Garrett Winters</td>
           <td>Accountant</td>
           <td>Tokyo</td>
@@ -173,7 +182,8 @@
           <td>66</td>
           <td>2012-11-27</td>
           <td>$198,500</td>
-        </tr>
+        </tr> -->
+        {% endfor %}
       </tbody>
 
     </table>

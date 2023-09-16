@@ -190,6 +190,7 @@ class UserProfileUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# to be shifted to new app
 class CreateOrderTicketView(APIView):
     renderer_classes = [UserRenderer]  # You should define UserRenderer
     permission_classes = [IsAuthenticated]

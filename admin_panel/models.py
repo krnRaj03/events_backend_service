@@ -96,6 +96,7 @@ class TicketInfo(models.Model):
         max_length=100, blank=True, null=True
     )  # for future use
     ticket_price = models.IntegerField()
+    ticket_image = models.URLField(max_length=200, blank=True, null=True)
     ticket_description = models.CharField(max_length=100, blank=True, null=True)
     tickets_available = models.IntegerField()
     tickets_sold = models.IntegerField(blank=True, null=True)

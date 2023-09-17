@@ -1,6 +1,4 @@
 from common_config import (
-    SENDINBLUE_API_KEY,
-    SENDINBLUE_API_URL,
     SENDGRID_API_KEY,
     SENDGRID_API_URL,
 )
@@ -8,6 +6,9 @@ import requests
 from rest_framework_simplejwt.tokens import RefreshToken
 import random, json, string
 import boto3
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 
 # Password check function for users
@@ -56,28 +57,26 @@ def get_tokens_for_user(user):
     }
 
 
-def send_email_with_sendgrid(to_email, content):
-    headers = {
-        "Authorization": f"Bearer {SENDGRID_API_KEY}",
-        "Content-Type": "application/json",
-    }
+def send_email_sendgrid(to_email, content):
+    # Replace with your SendGrid API key
+    api_key = "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"
 
-    data = {
-        "personalizations": [
-            {"to": [{"email": to_email}], "subject": "Test Email from EVENTS.az"}
-        ],
-        "from": {"email": "krnraj002@gmail.com"},
-        "content": [{"type": "text/plain", "value": content}],
-    }
+    # Create the email message
+    message = Mail(
+        from_email="mhertz.az@gmail.com",  # Replace with your sender email
+        to_emails=to_email,
+        subject="Test Email from EVENTS.az",
+        html_content=content,
+    )
 
     try:
-        response = requests.post(SENDGRID_API_URL, json=data, headers=headers)
-        response.raise_for_status()  # Raise an error for HTTP errors
-        print("Email sent successfully.")  # Print statement added here
-        return True  # Email sent successfully
-    except requests.exceptions.RequestException as e:
-        print("Error sending email:", e)
-        return False
+        sg = SendGridAPIClient(api_key)
+        response = sg.send(message)
+        print("Email sent successfully!")
+        print("Status Code:", response.status_code)
+
+    except Exception as e:
+        print("Error:", str(e))
 
 
 def generate_random_password(length=10):
@@ -87,7 +86,10 @@ def generate_random_password(length=10):
     lowercase_letters = string.ascii_lowercase
     uppercase_letter = random.choice(string.ascii_uppercase)
     digit = random.choice(string.digits)
-    symbol = random.choice(string.punctuation)
+
+    # Define a custom string of symbols without double quotes
+    symbols = "".join(char for char in string.punctuation if char != '"')
+    symbol = random.choice(symbols)
 
     # Ensure that the remaining characters in the password are lowercase letters
     remaining_length = length - 4

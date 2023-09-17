@@ -5,7 +5,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from .models import CustomUser
 from admin_panel.models import Events, TicketInfo, Sponsors
-from utilities import send_email_with_sendgrid
+from utilities import send_email_sendgrid
 
 
 # create a serializer class for the user model
@@ -53,7 +53,7 @@ class SendResetPasswordEmailSerializer(serializers.Serializer):
             token = PasswordResetTokenGenerator().make_token(user)
             link = "http://localhost:8000/reset-password/" + uid + "/" + token
             print(link)
-            send_email_with_sendgrid(
+            send_email_sendgrid(
                 user.email, f"Please click this link to Reset your password! {link}"
             )
             return attrs

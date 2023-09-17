@@ -21,7 +21,7 @@ from .serializers import (
 )
 from utilities import (
     password_check,
-    send_email_with_sendgrid,
+    send_email_sendgrid,
     get_tokens_for_user,
     create_order,
 )

@@ -189,7 +189,7 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
-      <a href="https://megahertz.az" class="brand-link">
+      <a href="https://megahertz.az" class="brand-link" style="text-decoration: none;">
         <img src="{% static 'dist/img/logo.png' %}" alt="AdminLTE Logo" style="width:50px; height:50px;">
         <span class="brand-text font-weight-light">Megahertz</span>
       </a>
@@ -202,7 +202,7 @@
             <img src="{% static 'dist/img/avatar5.png' %}" class="img-circle elevation-2" alt="User Image">
           </div>
           <div class="info">
-            <a href="#" class="d-block">Admin Name</a>
+            <a href="#" class="d-block" style="text-decoration: none;">Admin Name</a>
           </div>
         </div>
         <!-- SidebarSearch Form -->
@@ -225,7 +225,7 @@
                 {% else %} class="nav-link" {% endif %}>
                 <i class="nav-icon fas fa-user-plus"></i>
                 <p>
-                  Add Events
+                  Create Event
                 </p>
               </a>
             </li>
@@ -235,6 +235,15 @@
                 <i class="nav-icon fas fa-users"></i>
                 <p>
                   All Events
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'all_speakers' %}" {% if '/main/show-employees/' in request.path %}
+                class="nav-link active" {% else %} class="nav-link" {% endif %}>
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Speakers & Moderators
                 </p>
               </a>
             </li>

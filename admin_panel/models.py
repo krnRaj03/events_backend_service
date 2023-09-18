@@ -58,7 +58,7 @@ class Events(models.Model):
     date_created = models.DateTimeField()
     date_updated = models.DateTimeField()
     total_seats = models.IntegerField()
-    organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE)
+    organizer = models.ManyToManyField(Organizer)
     user = models.ManyToManyField(CustomUser)
 
     def __str__(self):

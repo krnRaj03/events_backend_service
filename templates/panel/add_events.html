@@ -217,9 +217,8 @@
           <input type="number" id="total_seats" name="total_seats" class="form-control" required><br>
         </div>
       </div>
-      <label for="organizer_id">Organizer:</label>
-      <select id="organizer_id" name="organizer_id" class="form-control" required>
-        <option value="">Select an Organizer</option>
+      <label for="organizer_id">Organizer:(Press Crtl to select more than 1 organizer)</label>
+      <select id="organizer_id" name="organizer_id" class="form-control" multiple required>
         {% for organizer in organizers %}
         <option value="{{ organizer.organizer_id }}">{{ organizer.organizer_name }}</option>
         {% endfor %}

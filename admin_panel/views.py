@@ -96,8 +96,9 @@ def add_events(request):
             events_panels = request.POST["number_of_panels"]
             venue = request.POST["venue_link"]
             total_seats = request.POST["total_seats"]
-            organizer_id = request.POST["organizer_id"]
-            organizer_instance = Organizer.objects.get(organizer_id=organizer_id)
+            organizer_id = request.POST.getlist("organizer_id")
+
+            # organizer_instance = Organizer.objects.get(organizer_id=organizer_id)
             if events_image:
                 folder_name = "event_images/"
                 result, s3_url = upload_S3_image(folder_name, request, events_image)
@@ -120,9 +121,12 @@ def add_events(request):
                 date_created=timezone.now(),
                 date_updated=timezone.now(),
                 total_seats=total_seats,
-                organizer=organizer_instance,
+                # organizer=organizer,
             )
             event.save()
+            for org in organizer_id:
+                organizer = Organizer.objects.get(pk=org)
+                event.organizer.add(organizer)
 
         elif "panel_form" in request.POST:
             panel_name = request.POST["panel_name"]

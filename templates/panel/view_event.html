@@ -1,0 +1,216 @@
+{% extends 'panel/admin_home.html' %}
+
+{% load static %}
+
+{% block main %}
+<!-- AdminLTE -->
+
+<link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+<!-- BOOTSTRAP 5
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> -->
+
+
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Events</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">All Events</li>
+            <li class="breadcrumb-item active">View Event</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="card">
+      <div class="card-body">
+        <h4>
+          {{ event.event_name }}
+        </h4>
+        <hr>
+        <div class="row">
+          <div class="col-4">
+            <label for="event_name">Event Name</label>
+            <input type="text" class="form-control" id="event_name" name="event_name" value="{{ event.event_name }}"
+              disabled>
+          </div>
+          <div class="col-4">
+            <label for="event_type">Event Type</label>
+            <input type="text" class="form-control" id="event_type" name="event_type" value="{{ event.event_type }}"
+              disabled>
+          </div>
+          <div class="col-4">
+            <label for="event_name">Event Agenda</label>
+            <input type="text" class="form-control" id="event_name" name="event_name" value="{{ event.event_agenda }}"
+              disabled><br>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <label for="event_name">Event Start Date</label>
+            <input type="text" class="form-control" id="event_name" name="event_name" value="{{ event.start_date }}"
+              disabled>
+          </div>
+          <div class="col-4">
+            <label for="event_name">Event End Date</label>
+            <input type="text" class="form-control" id="event_name" name="event_name" value="{{ event.end_date }}"
+              disabled>
+          </div>
+          <div class="col-4">
+            <label for="event_name">Event Duration</label>
+            <input type="text" class="form-control" id="event_name" name="event_name" value="{{ days_difference }} days"
+              disabled><br>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <label for="event_name">Number of Panels</label>
+            <input type="text" class="form-control" id="event_name" name="event_name"
+              value="{{ event.number_of_panels }}" disabled>
+          </div>
+          <div class="col-4">
+            <label for="event_name">Venue</label>
+            <input type="text" class="form-control" id="event_name" name="event_name" value="{{ event.venue_name }}"
+              disabled>
+          </div>
+          <div class="col-4">
+            <label for="event_name">Total Seats</label>
+            <input type="text" class="form-control" id="event_name" name="event_name" value="{{ event.total_seats }}"
+              disabled><br>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample3"
+              aria-expanded="false" aria-controls="collapseExample3">
+              Organizers </button>
+            <ul class="collapse" id="collapseExample3">
+              {% for o in organizers %}
+              <li>{{ o.organizer_name }}</li>
+              {% empty %}
+              <li>No organizers found for this event.</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="col-4">
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample4"
+              aria-expanded="false" aria-controls="collapseExample4">
+              Speakers </button>
+            <ul class="collapse" id="collapseExample4">
+              {% for s in speakers %}
+              <li>{{ s.first_name }} - {{ s.first_name }}</li>
+              {% empty %}
+              <li>No speakers found for this event.</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="col-4">
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample5"
+              aria-expanded="false" aria-controls="collapseExample5">
+              Moderstors </button>
+            <ul class="collapse" id="collapseExample5">
+              {% for m in moderators %}
+              <li>{{ s.first_name }} - {{ s.first_name }}</li>
+              {% empty %}
+              <li>No moderators found for this event.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseExample6" aria-expanded="false" aria-controls="collapseExample6">
+              Panel Names </button>
+            <ul class="collapse" id="collapseExample6">
+              {% for p in panels %}
+              <li>{{ p.panel_name }}</li>
+              {% empty %}
+              <li>No panels found for this event.</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="col-4">
+            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseExample7" aria-expanded="false" aria-controls="collapseExample7">
+              Panel Description </button>
+            <ul class="collapse" id="collapseExample7">
+              {% for p in panels %}
+              <li>{{ p.panel_description }}</li>
+              {% empty %}
+              <li>No panels found for this event.</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="col-4">
+            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseExample8" aria-expanded="false" aria-controls="collapseExample8">
+              Panel Topics </button>
+            <ul class="collapse" id="collapseExample8">
+              {% for p in panels %}
+              <li>{{ p.panel_topic }}</li>
+              {% empty %}
+              <li>No panels found for this event.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseExample9" aria-expanded="false" aria-controls="collapseExample9">
+              Tickets Info </button>
+            <ul class="collapse" id="collapseExample9">
+              {% for t in tickets %}
+              <li>{{ t.ticket_type }} - {{t.ticket_price}}azn </li>
+              {% empty %}
+              <li>No tickets found for this event.</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="col-4">
+            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseExample10" aria-expanded="false" aria-controls="collapseExample10">
+              Tickets Sold </button>
+            <ul class="collapse" id="collapseExample10">
+              {% for t in tickets %}
+              <li>{{ t.tickets_sold|length}} </li>
+
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="col-4">
+            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseExample11" aria-expanded="false" aria-controls="collapseExample11">
+              Tickets Scanned </button>
+            <ul class="collapse" id="collapseExample11">
+              {% for t in tickets %}
+              <li>{{ t.tickets_scanned|length}} </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+</div>
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+
+
+{% endblock %}

@@ -128,5 +128,12 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
             "state",
             "country",
             "pincode",
-            "status",
+            "linkedin_url",
+            "twitter_url",
+            "facebook_url",
+            "instagram_url",
+            "bio",
+            "gender",
+            "job_title",
+            "work_place",
         ]

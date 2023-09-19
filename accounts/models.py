@@ -17,6 +17,7 @@ class CustomUser(AbstractBaseUser):
     )
 
     ROLE_CHOICES = (
+        ("user", "User"),
         ("speaker", "Speaker"),
         ("moderator", "Moderator"),
         ("guest", "Guest"),
@@ -45,7 +46,7 @@ class CustomUser(AbstractBaseUser):
 
     status = models.CharField(max_length=20, blank=True)
     # signup_pending,signup_done,deleted,blocked
-    date_created = models.DateTimeField()
+    date_created = models.DateTimeField(auto_now_add=True)
     user_image = models.URLField(max_length=200, blank=True)
     address_line1 = models.CharField(max_length=100, blank=True)
     address_line2 = models.CharField(max_length=100, blank=True)

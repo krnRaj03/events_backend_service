@@ -1,6 +1,8 @@
 from common_config import (
     SENDGRID_API_KEY,
     SENDGRID_API_URL,
+    AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY,
 )
 import requests
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -9,6 +11,10 @@ import boto3
 import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+from PIL import Image, ImageDraw, ImageFont
+import qrcode
+import requests
+from io import BytesIO
 
 
 # Password check function for users
@@ -59,7 +65,7 @@ def get_tokens_for_user(user):
 
 def send_email_sendgrid(to_email, content):
     # Replace with your SendGrid API key
-    api_key = "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"
+    api_key = SENDGRID_API_KEY
 
     # Create the email message
     message = Mail(
@@ -110,8 +116,8 @@ def generate_random_password(length=10):
 
 
 def upload_S3_image(folder_name, request, image_name):
-    Access_key = "AKIASNPAKV5UAXCNWAG4"
-    Secret_key = "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"
+    Access_key = AWS_ACCESS_KEY_ID
+    Secret_key = AWS_SECRET_ACCESS_KEY
 
     # try:
     s3_session = boto3.Session(
@@ -171,3 +177,59 @@ def create_order(amount):
     except requests.exceptions.RequestException as e:
         print("Request failed:", e)
         return None
+
+
+def generate_ticket_with_qr(ticket_url, data):
+    # Create a QR code instance
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=20,
+        border=2,
+    )
+
+    # Add the data to the QR code
+    qr.add_data(data)
+
+    # Compile the QR code
+    qr.make(fit=True)
+
+    # Create a PIL image from the QR code
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    # Download the background image from the URL
+    response = requests.get(ticket_url)
+    if response.status_code == 200:
+        # Open the image from the downloaded content
+        background = Image.open(BytesIO(response.content))
+
+        # Calculate the position to place the QR code in the bottom right corner
+        x = background.width - img.width - 880  # Adjust the horizontal position
+        y = background.height - img.height - 300  # Adjust the vertical position
+
+        # Paste the QR code onto the background image
+        background.paste(img, (x, y))
+
+        # Create ImageDraw instance
+        draw = ImageDraw.Draw(background)
+
+        # Specify font-size and color
+        font_size = 80
+        font_color = "rgb(255,255,255)"  # black color
+
+        # Specify font (make sure the .ttf font file is in your directory)
+        font = ImageFont.truetype("arial.ttf", font_size)
+
+        # Position of the text
+        text_position = (300, 250)  # (x, y)
+
+        # Add dynamic text to image
+        draw.text(text_position, data, fill=font_color, font=font)
+
+        # Save the image to a file (optional)
+        background.save("newQr.png")
+
+        # Display the image using Pillow
+        background.show()
+    else:
+        print("Failed to download the background image.")

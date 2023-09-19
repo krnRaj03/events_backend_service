@@ -5,9 +5,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
-import random
-from django.http import JsonResponse, HttpResponse
-import json
+import random, json, datetime
+from django.http import JsonResponse
+from django.utils import timezone
+
 
 # Project/app level imports
 from .models import CustomUser
@@ -51,8 +52,9 @@ class SignupView(APIView):
                 # Generate and save OTP
                 otp = str(random.randint(100000, 999999))
                 user.email_otp = otp
+                user.role = "user"
                 # Send OTP to user's email address
-                send_email_with_sendgrid(user.email, "Your OTP is {}".format(otp))
+                send_email_sendgrid(user.email, "Your OTP is {}".format(otp))
                 user.save()
 
                 return Response(

@@ -3,43 +3,29 @@
 {% load static %}
 
 {% block main %}
-<style>
-  /* Style for the form sections */
-  .form-section {
-    /* display: none; */
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-  }
-
-  /* Style for the active (open) form section */
-  .active {
-    display: block;
-  }
-</style>
+<!-- AdminLTE -->
 
 <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+<!-- BOOTSTRAP 5 -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
   integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<!-- Datable Styles -->
 <style rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"></style>
-<style rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css"></style>
+<!-- <style rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css"></style> -->
 
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Edit Event</h1>
+          <h1>Events</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Edit Event</li>
+            <li class="breadcrumb-item active">All Events</li>
           </ol>
         </div>
       </div>
@@ -48,9 +34,7 @@
 
   <!-- Main content -->
   <section class="content">
-
-
-    <table id="example" class="table  table-hover">
+    <table id="example" class="table table-bordered table-hover">
       <thead class="thead-dark">
         <tr>
           <th>ID</th>
@@ -61,6 +45,7 @@
           <th>Work Place</th>
           <th>Events</th>
           <th>Panels</th>
+          <th>Topic</th> <!-- New column for Topic -->
           <th>Edit</th>
           <th>Delete</th>
         </tr>
@@ -84,49 +69,34 @@
             {{ panel.panel_name }} <br />
             {% endfor %}
           </td>
-          <td> <button class="btn btn-primary"><a href="{% url 'edit_speaker' user.id %}"
+          <td>
+            <!-- Display the panel topic in the new column -->
+            {% for panel in user.panels_set.all %}
+            {{ panel.panel_topic }} <br />
+            {% endfor %}
+          </td>
+          <td> <button class="btn btn-primary btn-sm"><a href="{% url 'edit_speaker' user.id %}"
                 style="color: aliceblue; text-decoration: none;">Edit</a></button></td>
-          <td> <button class="btn btn-danger"><a href=""
+          <td> <button class="btn btn-danger btn-sm"><a href=""
                 style="color: aliceblue; text-decoration: none;">Delete</a></button></td>
         </tr>
         {% endfor %}
       </tbody>
+
     </table>
-
-
-
-    <!-- <table class="table  table-hover">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Photo</th>
-          <th scope="col">Name</th>
-          <th scope="col">Role</th>
-          <th scope="col">Email</th>
-          <th scope="col">Edit</th>
-          <th scope="col">Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for u in users %}
-        <tr>
-          <th scope="row">{{forloop.counter}}</th>
-          <td><img src="{{ u.user_image }}" alt="User Avatar" class="img-size-50 mr-3 img-circle"></td>
-          <td>{{u.first_name}} {{u5.last_name}}</td>
-          <td>{{u.role}}</td>
-          <td>{{u.email}}</td>
-          <td> <button class="btn btn-primary"><a href=""
-                style="color: aliceblue; text-decoration: none;">Edit</a></button></td>
-          <td> <button class="btn btn-danger"><a href=""
-                style="color: aliceblue; text-decoration: none;">Delete</a></button></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table> -->
-
   </section>
   <!-- /.content -->
 </div>
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+<!-- For dataTables -->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<!-- For exporting -->
+<script src="https://cdn.datatables.net/buttons/2.3.0/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<!-- <script src="https://cdn.datatables.net/buttons/2.3.0/js/buttons.html5.min.js"></script> -->
 <script>
   $(document).ready(function () {
     new DataTable('#example', {
@@ -137,19 +107,13 @@
       "lengthChange": true,
       "scrollX": true,
       "dom": 'Bfrtip',
-      "buttons": [
-        'copy', 'csv', 'excel', 'pdf', 'print'
-      ]
+      // "buttons": [
+      //   'copy', 'csv', 'excel', 'pdf', 'print'
+      // ]
 
     });
   });
 </script>
-<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
 
 
 {% endblock %}

@@ -58,36 +58,12 @@
             </a></strong>
 
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link" data-toggle="dropdown" href="#">
-            <i class="fas fa-cloud"></i>
-            <!-- <span class="badge badge-warning navbar-badge">15</span> -->
-          </a>
-          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-            <span class="dropdown-item dropdown-header"><strong>Weather Today:</strong></span>
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
-              <p class="preview-subject font-weight-normal">Temperature:<b class="text-muted"> {{y}} C</b>
-              </p>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
-              <p class="preview-subject font-weight-normal">Wind Speed: <b class="text-muted">{{z}} Km/h</b>
-              </p>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
-              <p class="preview-subject font-weight-normal">Summary: <b class="text-muted"> {{x}}</b>
-              </p>
-            </a>
 
-          </div>
-        </li>
 
         <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="#">
-            <i class="far fa-comments"></i>
-            <span class="badge badge-danger navbar-badge">3</span>
+            <i class="far fa-comments" style="font-size: 20px;"></i>
+            <!-- <span class="badge badge-danger navbar-badge">3</span> -->
           </a>
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
             <a href="#" class="dropdown-item">
@@ -147,8 +123,8 @@
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="#">
-            <i class="far fa-bell"></i>
-            <span class="badge badge-warning navbar-badge">15</span>
+            <i class="far fa-bell" style="font-size: 20px;"></i>
+            <!-- <span class="badge badge-warning navbar-badge">15</span> -->
           </a>
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
             <span class="dropdown-item dropdown-header">15 Notifications</span>
@@ -171,6 +147,7 @@
             <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
           </div>
         </li>
+
         <li class="nav-item">
           <a class="nav-link" data-widget="fullscreen" href="#" role="button">
             <i class="fas fa-expand-arrows-alt"></i>
@@ -230,11 +207,20 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="{% url 'admin_stastics' %}" {% if '/main/show-employees/' in request.path %}
-                class="nav-link active" {% else %} class="nav-link" {% endif %}>
+              <a href="{% url 'all_events' %}" {% if '/main/show-employees/' in request.path %} class="nav-link active"
+                {% else %} class="nav-link" {% endif %}>
                 <i class="nav-icon fas fa-users"></i>
                 <p>
                   All Events
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'all_tickets' %}" {% if '/main/show-employees/' in request.path %} class="nav-link active"
+                {% else %} class="nav-link" {% endif %}>
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  All Tickets
                 </p>
               </a>
             </li>
@@ -248,13 +234,22 @@
               </a>
             </li>
             <li class="nav-item">
+              <a href="{% url 'all_users' %}" {% if '/main/show-employees/' in request.path %} class="nav-link active"
+                {% else %} class="nav-link" {% endif %}>
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  All Users
+                </p>
+              </a>
+            </li>
+            <!-- <li class="nav-item">
               <a href="" class="nav-link">
                 <i class="nav-icon fas fa-wrench"></i>
                 <p>
                   Control Panel
                 </p>
               </a>
-            </li>
+            </li> -->
 
 
 
@@ -302,7 +297,7 @@
           <!-- 1st Row -->
           <div class="row">
             <div class="col-lg-3 col-6">
-              <div class="small-box bg-info">
+              <div class="small-box bg-primary">
                 <div class="inner">
                   <h3>31</h3>
 
@@ -454,56 +449,7 @@
   <script src="{% static 'dist/js/adminlte.js' %}"></script>
   <!-- AdminLTE for demo purposes -->
   <!-- <script src="{% static 'dist/js/demo.js' %}"></script> -->
-  <script>
-    // Baku coordinates
-    const bakuCoordinates = [40.4093, 49.8671];
 
-    // Create the map centered on Baku with OpenStreetMap tiles
-    const map = L.map('map').setView(bakuCoordinates, 9);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-    // Add a marker at the center of Baku
-    const marker = L.marker(bakuCoordinates).addTo(map);
-
-    // Add a popup to the marker
-    marker.bindPopup('<b>Baku, Azerbaijan</b>').openPopup();
-
-    // Create an alternative tile layer with Stamen Toner (black and white style)
-    const stamenToner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
-      subdomains: 'abcd',
-      minZoom: 0,
-      maxZoom: 20,
-      ext: 'png'
-    });
-
-    // Change the map's style to Stamen Toner when the "Toner" button is clicked
-    const tonerButton = document.createElement('button');
-    tonerButton.textContent = 'Toner Map';
-    tonerButton.addEventListener('click', () => {
-      if (!map.hasLayer(stamenToner)) {
-        map.addLayer(stamenToner);
-      }
-    });
-
-    // Change the map's style back to OpenStreetMap when the "Default" button is clicked
-    const defaultButton = document.createElement('button');
-    defaultButton.textContent = 'Default Map';
-    defaultButton.addEventListener('click', () => {
-      if (map.hasLayer(stamenToner)) {
-        map.removeLayer(stamenToner);
-      }
-    });
-
-    // Add the buttons to the map
-    const buttonContainer = document.createElement('div');
-    buttonContainer.appendChild(tonerButton);
-    buttonContainer.appendChild(defaultButton);
-    buttonContainer.style.position = 'absolute';
-    buttonContainer.style.top = '10px';
-    buttonContainer.style.left = '10px';
-    map.getContainer().appendChild(buttonContainer);
-  </script>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </body>
 
 </html>

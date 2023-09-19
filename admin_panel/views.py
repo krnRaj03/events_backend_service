@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
 from .models import Organizer, Events, TicketInfo, Panels
 from accounts.models import CustomUser
@@ -29,10 +30,12 @@ def admin_login(request):
     return render(request, "auth/admin_login.html")
 
 
+@login_required
 def admin_home(request):
     return render(request, "panel/admin_home.html")
 
 
+@login_required
 def add_events(request):
     organizers = Organizer.objects.all()
     events = Events.objects.all()
@@ -236,6 +239,8 @@ def add_events(request):
             ticket_description = request.POST["ticket_description"]
             tickets_available = request.POST["tickets_available"]
             ticket_image = request.FILES["image"].name
+            ticket_start_date = request.POST["start_date"]
+            ticket_end_date = request.POST["end_date"]
             events_id = request.POST["event_id"]
             events_instance = Events.objects.get(event_id=events_id)
             if ticket_image:
@@ -250,6 +255,8 @@ def add_events(request):
                 ticket_type=ticket_type,
                 ticket_price=ticket_price,
                 ticket_description=ticket_description,
+                ticket_start_date=ticket_start_date,
+                ticket_end_date=ticket_end_date,
                 ticket_image=s3_url,
                 tickets_available=tickets_available,
                 events=events_instance,
@@ -263,7 +270,8 @@ def add_events(request):
     )
 
 
-def admin_stastics(request):
+@login_required
+def all_events(request):
     events = Events.objects.all()
     events_speaker = Events.objects.filter(user__role="speaker")
     context = {
@@ -273,12 +281,53 @@ def admin_stastics(request):
     return render(request, "panel/all_events.html", context)
 
 
+@login_required
+def view_event(request, event_id):
+    event = Events.objects.get(event_id=event_id)
+    panels = Panels.objects.filter(events=event)
+    tickets = TicketInfo.objects.filter(events=event)
+
+    """Organizers related to the event"""
+    organizers = event.organizer.all()
+
+    """Speakers related to the event"""
+    speakers = event.user.filter(role="speaker")
+
+    """Moderators related to the event"""
+    moderators = event.user.filter(role="moderator")
+
+    """Duration of the event"""
+    # string format "%d %b %Y"
+    start_date_str = event.start_date.strftime("%d %b %Y")
+    end_date_str = event.end_date.strftime("%d %b %Y")
+    # Convert the date strings to datetime objects
+    start_date = datetime.strptime(start_date_str, "%d %b %Y")
+    end_date = datetime.strptime(end_date_str, "%d %b %Y")
+    # Calculate the difference between the dates
+    date_difference = start_date - end_date
+    # Access the difference in days
+    days_difference = date_difference.days
+
+    context = {
+        "event": event,
+        "panels": panels,
+        "tickets": tickets,
+        "days_difference": days_difference,
+        "organizers": organizers,
+        "speakers": speakers,
+        "moderators": moderators,
+    }
+    return render(request, "panel/view_event.html", context)
+
+
+@login_required
 def delete_event(request, event_id):
     event = Events.objects.get(event_id=event_id)
     event.delete()
     return redirect("admin_stastics")
 
 
+@login_required
 def edit_event(request, event_id):
     event = Events.objects.get(event_id=event_id)
     print(event)
@@ -287,6 +336,7 @@ def edit_event(request, event_id):
     return render(request, "panel/edit_event.html", {"event": event})
 
 
+@login_required
 def edit_speaker(request, speaker_id):
     speaker = CustomUser.objects.get(id=speaker_id)
     if request.method == "POST":
@@ -313,89 +363,24 @@ def edit_speaker(request, speaker_id):
     return render(request, "panel/edit_speaker.html", {"speaker": speaker})
 
 
-def count_speaker(request):
-    speakers = CustomUser.objects.filter(is_user=False, role="speaker").values(
-        "first_name", "last_name"
-    )
-    # Convert QuerySet to a list of dictionaries
-    speaker_list = list(speakers)
-    return JsonResponse({"count": len(speaker_list), "list": speaker_list})
-
-
+@login_required
 def all_speakers(request):
     users = CustomUser.objects.filter(Q(role="speaker") | Q(role="moderator"))
-
-    # Retrieve the events associated with these users
-    events = Events.objects.filter(user__in=users)
-
-    ############
-
     # Retrieve the panels associated with these users
     panels = Panels.objects.filter(user__in=users)
-    print("Panels:", panels)
     context = {"speakers": users, "users": users}
     return render(request, "panel/all_speakers.html", context=context)
 
 
-# def Speaker(request):
-#     events = Events.objects.all()
-#     if request.method == "POST":
-#         speaker_fname = request.POST["first_name"]
-#         speaker_lname = request.POST["last_name"]
-#         speaker_email = request.POST["email"]
-#         speaker_mobile_no = request.POST["mobile_no"]
-#         speaker_dob = request.POST["date_of_birth"]
-#         speaker_gender = request.POST["gender"]
-#         speaker_job_title = request.POST["job_title"]
-#         role = request.POST["role"]
-#         speaker_address_line1 = request.POST["address_line1"]
-#         speaker_address_line2 = request.POST["address_line2"]
-#         speaker_city = request.POST["city"]
-#         speaker_state = request.POST["state"]
-#         speaker_country = request.POST["country"]
-#         speaker_pincode = request.POST["pincode"]
-#         events_id = request.POST.get("event_id")
-#         password = generate_random_password()
-#         speaker_image = request.FILES.get("image").name
-#         events_instance = Events.objects.get(events_id=events_id)
-#         if speaker_image:
-#             folder_name = "speaker_images/"
-#             result, s3_url = upload_S3_image(folder_name, request, speaker_image)
-#             print("Image uploaded successfully")
-#             if result:
-#                 print("Image uploaded successfully")
-#                 print("S3 URL:", s3_url)
-#         else:
-#             print("Image not uploaded")
+@login_required
+def all_users(request):
+    users = CustomUser.objects.filter(role="user")
+    context = {"users": users}
+    return render(request, "panel/all_users.html", context)
 
-#         speaker = CustomUser.objects.create(
-#             email=speaker_email,
-#             mobile_no=speaker_mobile_no,
-#             first_name=speaker_fname,
-#             last_name=speaker_lname,
-#             date_of_birth=speaker_dob,
-#             gender=speaker_gender,
-#             job_title=speaker_job_title,
-#             is_user=False,
-#             status="profile_created",
-#             role=role,
-#             address_line1=speaker_address_line1,
-#             address_line2=speaker_address_line2,
-#             city=speaker_city,
-#             state=speaker_state,
-#             country=speaker_country,
-#             pincode=speaker_pincode,
-#             user_image=s3_url,
-#             date_created=datetime.now(),
-#         )
-#         send_email_with_sendgrid(
-#             speaker_email,
-#             f"Your Login email is {speaker_email} & password is {password}. Please click on the LOGIN Link on the app.",
-#         )
-#         speaker.set_password(password)
-#         events_instance.user.add(speaker)
-#         events_instance.save()
-#         speaker.save()
-#         return render(request, "new_speaker.html", {"events": events})
 
-#     return render(request, "new_speaker.html", {"events": events})
+@login_required
+def all_tickets(request):
+    tickets = TicketInfo.objects.all()
+    context = {"tickets": tickets}
+    return render(request, "panel/all_tickets.html", context)

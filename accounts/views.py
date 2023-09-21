@@ -50,7 +50,7 @@ class SignupView(APIView):
             else:
                 user = serializer.save()
                 # Generate and save OTP
-                otp = str(random.randint(100000, 999999))
+                otp = str(random.randint(10000, 99999))
                 user.email_otp = otp
                 user.role = "user"
                 # Send OTP to user's email address

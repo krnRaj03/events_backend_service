@@ -94,10 +94,10 @@
         </div>
         <div class="row">
           <div class="col-4">
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample3"
+            <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample3"
               aria-expanded="false" aria-controls="collapseExample3">
               Organizers </button>
-            <ul class="collapse" id="collapseExample3">
+            <ul>
               {% for o in organizers %}
               <li>{{ o.organizer_name }}</li>
               {% empty %}
@@ -106,10 +106,10 @@
             </ul>
           </div>
           <div class="col-4">
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample4"
+            <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample4"
               aria-expanded="false" aria-controls="collapseExample4">
               Speakers </button>
-            <ul class="collapse" id="collapseExample4">
+            <ul>
               {% for s in speakers %}
               <li>{{ s.first_name }} - {{ s.first_name }}</li>
               {% empty %}
@@ -118,10 +118,11 @@
             </ul>
           </div>
           <div class="col-4">
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample5"
+            <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample5"
               aria-expanded="false" aria-controls="collapseExample5">
               Moderstors </button>
-            <ul class="collapse" id="collapseExample5">
+            <!-- <ul class="collapse" id="collapseExample5"> -->
+            <ul>
               {% for m in moderators %}
               <li>{{ s.first_name }} - {{ s.first_name }}</li>
               {% empty %}
@@ -132,10 +133,11 @@
         </div>
         <div class="row">
           <div class="col-4">
-            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+            <button class="btn btn-secondary mt-4" type="button" data-bs-toggle="collapse"
               data-bs-target="#collapseExample6" aria-expanded="false" aria-controls="collapseExample6">
               Panel Names </button>
-            <ul class="collapse" id="collapseExample6">
+            <!-- <ul class="collapse" id="collapseExample6"> -->
+            <ul>
               {% for p in panels %}
               <li>{{ p.panel_name }}</li>
               {% empty %}
@@ -144,10 +146,11 @@
             </ul>
           </div>
           <div class="col-4">
-            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+            <button class="btn btn-secondary mt-4" type="button" data-bs-toggle="collapse"
               data-bs-target="#collapseExample7" aria-expanded="false" aria-controls="collapseExample7">
               Panel Description </button>
-            <ul class="collapse" id="collapseExample7">
+            <!-- <ul class="collapse" id="collapseExample7"> -->
+            <ul>
               {% for p in panels %}
               <li>{{ p.panel_description }}</li>
               {% empty %}
@@ -156,10 +159,11 @@
             </ul>
           </div>
           <div class="col-4">
-            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+            <button class="btn btn-secondary mt-4" type="button" data-bs-toggle="collapse"
               data-bs-target="#collapseExample8" aria-expanded="false" aria-controls="collapseExample8">
               Panel Topics </button>
-            <ul class="collapse" id="collapseExample8">
+            <!-- <ul class="collapse" id="collapseExample8"> -->
+            <ul>
               {% for p in panels %}
               <li>{{ p.panel_topic }}</li>
               {% empty %}
@@ -170,10 +174,11 @@
         </div>
         <div class="row">
           <div class="col-4">
-            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+            <button class="btn btn-secondary mt-4" type="button" data-bs-toggle="collapse"
               data-bs-target="#collapseExample9" aria-expanded="false" aria-controls="collapseExample9">
               Tickets Info </button>
-            <ul class="collapse" id="collapseExample9">
+            <!-- <ul class="collapse" id="collapseExample9"> -->
+            <ul>
               {% for t in tickets %}
               <li>{{ t.ticket_type }} - {{t.ticket_price}}azn </li>
               {% empty %}
@@ -182,10 +187,11 @@
             </ul>
           </div>
           <div class="col-4">
-            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+            <button class="btn btn-secondary mt-4" type="button" data-bs-toggle="collapse"
               data-bs-target="#collapseExample10" aria-expanded="false" aria-controls="collapseExample10">
               Tickets Sold </button>
-            <ul class="collapse" id="collapseExample10">
+            <!-- <ul class="collapse" id="collapseExample10"> -->
+            <ul>
               {% for t in tickets %}
               <li>{{ t.tickets_sold|length}} </li>
 
@@ -193,10 +199,11 @@
             </ul>
           </div>
           <div class="col-4">
-            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+            <button class="btn btn-secondary mt-4" type="button" data-bs-toggle="collapse"
               data-bs-target="#collapseExample11" aria-expanded="false" aria-controls="collapseExample11">
               Tickets Scanned </button>
-            <ul class="collapse" id="collapseExample11">
+            <!-- <ul class="collapse" id="collapseExample11"> -->
+            <ul>
               {% for t in tickets %}
               <li>{{ t.tickets_scanned|length}} </li>
               {% endfor %}

@@ -38,15 +38,13 @@
       <thead class="thead-dark">
         <tr>
           <th>Ticket Type</th>
+          <th>Event</th>
+
           <th>Ticket Price</th>
           <th>Ticket Description</th>
-          <th>Event</th>
           <th>Ticket Date</th>
           <th>Tickets Sold</th>
           <th>Tickets Scanned</th>
-          <th>Scan</th>
-          <th>Scan</th>
-          <th>Scan</th>
           <th>Edit</th>
           <th>Delete</th>
         </tr>
@@ -56,19 +54,15 @@
 
         <tr class="table-info">
           <td><b>{{t.ticket_type}} </b></td>
+          <td style="width: 100px;"><b>{{t.events.event_name}}</b></td>
           <td>{{t.ticket_price}} azn</td>
           <td>{{t.ticket_description}}</td>
-          <td>{{t.events.event_name}}</td>
           <td>{{t.ticket_start_date}} to {{t.ticket_end_date}}</td>
           <td>{{t.tickets_sold}}</td>
           <td>{{t.tickets_scanned}}</td>
-          <td>{{t.tickets_scanned}}</td>
-          <td>{{t.tickets_scanned}}</td>
-          <td>{{t.tickets_scanned}}</td>
-
-          <td> <button class="btn btn-sm btn-primary"><a href=""
+          <td> <button class="btn btn-sm btn-primary"><a href="{% url 'edit_ticket' t.ticket_id %}"
                 style="color: aliceblue; text-decoration: none;">Edit</a></button></td>
-          <td> <button class="btn btn-sm btn-danger"><a href=""
+          <td> <button class="btn btn-sm btn-danger"><a href="{% url 'delete_ticket' t.ticket_id %}"
                 style="color: aliceblue; text-decoration: none;">Delete</a></button></td>
         </tr>
         {% endfor %}

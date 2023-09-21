@@ -97,7 +97,8 @@ def add_events(request):
             start_date = request.POST["start_date"]
             end_date = request.POST["end_date"]
             events_panels = request.POST["number_of_panels"]
-            venue = request.POST["venue_link"]
+            venue_url = request.POST["venue_link"]
+            venue_name = request.POST["venue_name"]
             total_seats = request.POST["total_seats"]
             organizer_id = request.POST.getlist("organizer_id")
 
@@ -120,7 +121,8 @@ def add_events(request):
                 event_description=events_description,
                 start_date=start_date,
                 end_date=end_date,
-                venue_link=venue,
+                venue_link=venue_url,
+                venue_name=venue_name,
                 date_created=timezone.now(),
                 date_updated=timezone.now(),
                 total_seats=total_seats,
@@ -330,10 +332,52 @@ def delete_event(request, event_id):
 @login_required
 def edit_event(request, event_id):
     event = Events.objects.get(event_id=event_id)
-    print(event)
+    if event.start_date and event.end_date:
+        event_start_date = event.start_date.strftime("%Y-%m-%d")
+        event_start_time = event.start_date.strftime("%H:%M")
+        event_end_date = event.end_date.strftime("%Y-%m-%d")
+        event_end_time = event.end_date.strftime("%H:%M")
+        print(event_start_date, event_start_time, event_end_date, event_end_time)
+    else:
+        event_end_date, event_end_time, event_start_date, event_end_time = (
+            None,
+            None,
+            None,
+            None,
+        )
+
     if request.method == "POST":
-        pass
-    return render(request, "panel/edit_event.html", {"event": event})
+        event.event_name = request.POST["event_name"]
+        event.event_type = request.POST["event_type"]
+        event.event_agenda = request.POST["event_agenda"]
+        event.event_description = request.POST["event_description"]
+        event.start_date = request.POST["start_date"]
+        event.end_date = request.POST["end_date"]
+        event.number_of_panels = request.POST["number_of_panels"]
+        event.venue_link = request.POST["venue_link"]
+        event.venue_name = request.POST["venue_name"]
+        event.total_seats = request.POST["total_seats"]
+        if "image" in request.FILES:
+            event_image = request.FILES["image"].name
+            folder_name = "event_images/"
+            result, s3_url = upload_S3_image(folder_name, request, event_image)
+            if result:
+                print("Image uploaded successfully")
+                print("S3 URL:", s3_url)
+                event.event_image = s3_url
+            else:
+                print("Image not uploaded")
+        else:
+            print("Image not uploaded")
+        event.save()
+    context = {
+        "event": event,
+        "event_start_date": event_start_date,
+        "event_end_date": event_end_date,
+        "event_start_time": event_start_time,
+        "event_end_time": event_end_time,
+    }
+    return render(request, "panel/edit_event.html", context)
 
 
 @login_required
@@ -361,6 +405,66 @@ def edit_speaker(request, speaker_id):
         #     else:
         #         print("Image not uploaded")
     return render(request, "panel/edit_speaker.html", {"speaker": speaker})
+
+
+@login_required
+def delete_speaker(request, speaker_id):
+    speaker = CustomUser.objects.get(id=speaker_id)
+    speaker.delete()
+    return redirect("all_speakers")
+
+
+@login_required
+def edit_ticket(request, ticket_id):
+    ticket = TicketInfo.objects.get(ticket_id=ticket_id)
+
+    if ticket.ticket_start_date and ticket.ticket_end_date:
+        ticket_start_date = ticket.ticket_start_date.strftime("%Y-%m-%d")
+        ticket_start_time = ticket.ticket_start_date.strftime("%H:%M")
+        ticket_end_date = ticket.ticket_end_date.strftime("%Y-%m-%d")
+        ticket_end_time = ticket.ticket_end_date.strftime("%H:%M")
+    else:
+        ticket_start_date, ticket_end_date, ticket_start_time, ticket_end_time = (
+            None,
+            None,
+            None,
+            None,
+        )
+
+    if request.method == "POST":
+        ticket.ticket_type = request.POST["ticket_type"]
+        ticket.ticket_price = request.POST["ticket_price"]
+        ticket.ticket_description = request.POST["ticket_description"]
+        ticket.tickets_available = request.POST["tickets_available"]
+        ticket.ticket_start_date = request.POST["ticket_start_date"]
+        ticket.ticket_end_date = request.POST["ticket_end_date"]
+        if "image" in request.FILES:
+            ticket_image = request.FILES["image"].name
+            folder_name = "ticket_images/"
+            result, s3_url = upload_S3_image(folder_name, request, ticket_image)
+            if result:
+                print("Image uploaded successfully")
+                print("S3 URL:", s3_url)
+                ticket.ticket_image = s3_url
+        else:
+            print("Image not uploaded")
+        ticket.save()
+
+    context = {
+        "ticket": ticket,
+        "ticket_start_date": ticket_start_date,
+        "ticket_end_date": ticket_end_date,
+        "ticket_start_time": ticket_start_time,
+        "ticket_end_time": ticket_end_time,
+    }
+    return render(request, "panel/edit_ticket.html", context)
+
+
+@login_required
+def delete_ticket(request, ticket_id):
+    ticket = TicketInfo.objects.get(ticket_id=ticket_id)
+    ticket.delete()
+    return redirect("all_events")
 
 
 @login_required

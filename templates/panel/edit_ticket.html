@@ -47,53 +47,60 @@
 
   <!-- Main content -->
   <section class="content">
-    <!-- ADD EVENTS FORM -->
+
     <form id="form1" method="post" class="form-section my-2" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="row">
-
         <div class="col-6">
-          <img src="{{speaker.user_image}}" alt="ticket_image" width="180pxx" height="200px"
-            style="margin-left: 20px; margin-bottom: 10px;">
-        </div>
-
-      </div>
-      <div class="row">
-        <div class="col-6">
-          <label for="first_name">First Name:</label>
-          <input type="text" id="first_name" class="form-control" name="first_name" value={{speaker.first_name}}><br>
+          <label for="ticket_type">Ticket Type:</label>
+          <input type="text" id="ticket_type" class="form-control" name="ticket_type" value={{ticket.ticket_type}}><br>
         </div>
         <div class="col-6">
-          <label for="last_name">Last Name:</label>
-          <input type="text" id="last_name" class="form-control" name="last_name" value={{speaker.last_name}}><br>
+          <label for="ticket_price">Ticket Price:</label>
+          <input type="number" id="ticket_price" class="form-control" name="ticket_price" value={{ticket.ticket_price}}
+            azn><br>
         </div>
       </div>
 
       <div class="row">
         <div class="col-6">
-          <label for="job_title">Job Title:</label>
-          <input type="text" id="job_title" class="form-control" name="job_title" value={{speaker.job_title}}><br>
+          <label for="ticket_description">Ticket Description:</label>
+          <input type="text" id="ticket_description" class="form-control" name="ticket_description"
+            value={{ticket.ticket_description}}><br>
         </div>
         <div class="col-6">
-          <label for="work_place">Work Place:</label>
-          <input type="text" id="work_place" class="form-control" name="work_place" value={{speaker.work_place}}><br>
+          <label for="tickets_available">Tickets Available:</label>
+          <input type="number" id="tickets_available" class="form-control" name="tickets_available"
+            value={{ticket.tickets_available}}><br>
         </div>
       </div>
+
       <div class="row">
         <div class="col-6">
-          <label for="speaker_image">Change image</label>
-          <input type="file" id="speaker_image" class="form-control" name="image"><br>
+          <label for="ticket_start_date">Ticket Start Date:</label> <input type="text" id="ticket_start_date"
+            value={{ticket_start_date}} disabled><br>
+          <input type="datetime-local" id="ticket_start_date" class="form-control" name="ticket_start_date"
+            value=""><br>
         </div>
         <div class="col-6">
-          <label for="mobile_no">Mobile Number</label>
-          <input type="text" id="mobile_no" class="form-control" name="mobile_no" value={{speaker.mobile_no}}><br>
+          <label for="ticket_end_date">Ticket End Date:</label> <input type="text" id="ticket_end_date"
+            value={{ticket_end_date}} disabled><br>
+          <input type="datetime-local" id="ticket_end_date" class="form-control" name="ticket_end_date" value=""><br>
         </div>
+      </div>
 
+      <div class="row">
+        <div class="col-6">
+          <label for="ticket_image">Ticket image</label>
+          <input type="file" id="ticket_image" class="form-control" name="image"><br>
+        </div>
+        <div class="col-6">
+          <img src="{{ticket.ticket_image}}" alt="ticket_image" width="400px" height="150px">
+        </div>
       </div>
 
 
-
-      <input type="submit" value="Update" class="btn btn-success" name="speaker_edit_form">
+      <input type="submit" value="Update" class="btn btn-success" name="event_form">
     </form>
 
   </section>

@@ -48,10 +48,6 @@
   <!-- Main content -->
   <section class="content">
 
-
-
-
-    <!-- ADD EVENTS FORM -->
     <form id="form1" method="post" class="form-section my-2" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="row">
@@ -61,7 +57,9 @@
         </div>
         <div class="col-6">
           <label for="event_type">Event Type:</label>
+          <input type="text" id="ticket_start_date" value={{event.event_type}} disabled><br>
           <select id="event_type" name="event_type" class="form-control" required>
+            <option value="">Select type of event</option>
             <option value="conference">Conference</option>
             <option value="forum">Forum</option>
             <option value="exhibition">Exhibition</option>
@@ -86,47 +84,54 @@
 
       <div class="row">
         <div class="col-6">
-          <label for="event_image">Event Image (URL):</label>
-          <input type="file" id="event_image" name="image" class="form-control" placeholder="Optional"><br>
+
+          <label for="start_date">Start Date:</label>
+          <input type="text" id="start_date" value={{event_start_date}} disabled><br>
+          <input type="datetime-local" id="start_date" name="start_date" class="form-control" required><br>
         </div>
         <div class="col-6">
-          <label for="start_date">Start Date:</label>
-          <input type="datetime-local" id="start_date" name="start_date" class="form-control"
-            value={{event.start_date}}><br>
+          <label for="end_date">End Date:</label>
+          <input type="text" id="ticket_start_date" value={{event_end_date}} disabled><br>
+
+          <input type="datetime-local" id="end_date" name="end_date" class="form-control"><br>
         </div>
       </div>
 
       <div class="row">
         <div class="col-6">
-          <label for="end_date">End Date:</label>
-          <input type="datetime-local" id="end_date" name="end_date" class="form-control" required><br>
+          <label for="total_seats">Total Seats</label>
+          <input type="number" id="total_seats" name="total_seats" class="form-control" value={{event.total_seats}}><br>
         </div>
         <div class="col-6">
           <label for="number_of_panels">Number of Panels:</label>
           <input type="number" id="number_of_panels" name="number_of_panels" class="form-control"
-            placeholder="Optional"><br>
+            value={{event.number_of_panels}}><br>
         </div>
       </div>
 
       <div class="row">
         <div class="col-6">
           <label for="venue_link">Venue Link (URL):</label>
-          <input type="url" id="venue_link" name="venue_link" class="form-control" required><br>
+          <input type="url" id="venue_link" name="venue_link" class="form-control" value={{event.venue_link}}
+            required><br>
         </div>
         <div class="col-6">
-          <label for="total_seats">Total Seats:</label>
-          <input type="number" id="total_seats" name="total_seats" class="form-control" required><br>
+          <label for="venue_name">Venue name:</label>
+          <input type="text" id="venue_name" name="venue_name" class="form-control" value={{event.venue_name}}
+            required><br>
         </div>
       </div>
-      <label for="organizer_id">Organizer:</label>
-      <select id="organizer_id" name="organizer_id" class="form-control" required>
-        <option value="">Select an Organizer</option>
-        {% for organizer in organizers %}
-        <option value="{{ organizer.organizer_id }}">{{ organizer.organizer_name }}</option>
-        {% endfor %}
-      </select>
-      <br>
-      <input type="submit" value="Update" class="btn btn-success" name="event_form">
+
+      <div class="row">
+        <div class="col-6">
+          <label for="event_image">Event Image (URL):</label>
+          <input type="file" id="event_image" name="image" class="form-control" placeholder="Optional"><br>
+        </div>
+        <div class="col-6">
+          <img src="{{event.event_image}}" alt="event_image" width="450px" height="300px">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success" name="event_form">Update</button>
     </form>
 
 

@@ -116,13 +116,13 @@ def generate_random_password(length=10):
 
 
 def upload_S3_image(folder_name, request, image_name):
-    Access_key = AWS_ACCESS_KEY_ID
-    Secret_key = AWS_SECRET_ACCESS_KEY
+    # Access_key = AWS_ACCESS_KEY_ID
+    # Secret_key = AWS_SECRET_ACCESS_KEY
 
     # try:
     s3_session = boto3.Session(
-        aws_access_key_id=Access_key,
-        aws_secret_access_key=Secret_key,
+        aws_access_key_id="AKIASNPAKV5UAXCNWAG4",
+        aws_secret_access_key="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",
         region_name="us-east-1",
     )
     s3_client = s3_session.client("s3")

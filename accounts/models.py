@@ -59,7 +59,7 @@ class CustomUser(AbstractBaseUser):
     twitter_url = models.URLField(max_length=200, blank=True)
     facebook_url = models.URLField(max_length=200, blank=True)
     instagram_url = models.URLField(max_length=200, blank=True)
-    bio = models.TextField(max_length=500, blank=True)
+    bio = models.TextField(max_length=1000, blank=True)
     # panel_no = models.CharField(max_length=100, blank=True)
     topic = models.CharField(max_length=100, blank=True)
 

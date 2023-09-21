@@ -15,19 +15,9 @@ class CustomUser(AbstractBaseUser):
         ("F", "Female"),
         ("O", "Other"),
     )
-    JOB_TITLE_CHOICES = (
-        ("manager", "Manager"),
-        ("developer", "Developer"),
-        ("designer", "Designer"),
-        ("analyst", "Analyst"),
-        ("tester", "Tester"),
-        ("hr", "HR"),
-        ("accountant", "Accountant"),
-        ("sales", "Sales"),
-        ("student", "Student"),
-        ("other", "Other"),
-    )
+
     ROLE_CHOICES = (
+        ("user", "User"),
         ("speaker", "Speaker"),
         ("moderator", "Moderator"),
         ("guest", "Guest"),
@@ -47,7 +37,8 @@ class CustomUser(AbstractBaseUser):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
 
     is_active = models.BooleanField(_("active"), default=True)
-    job_title = models.CharField(max_length=20, choices=JOB_TITLE_CHOICES, blank=True)
+    job_title = models.CharField(max_length=20, blank=True)
+    work_place = models.CharField(max_length=200, blank=True)
     is_user = models.BooleanField(_("user status"), default=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, blank=True)
     is_staff = models.BooleanField(_("staff status"), default=False)
@@ -68,8 +59,8 @@ class CustomUser(AbstractBaseUser):
     twitter_url = models.URLField(max_length=200, blank=True)
     facebook_url = models.URLField(max_length=200, blank=True)
     instagram_url = models.URLField(max_length=200, blank=True)
-    bio = models.TextField(max_length=500, blank=True)
-    panel_no = models.CharField(max_length=100, blank=True)
+    bio = models.TextField(max_length=1000, blank=True)
+    # panel_no = models.CharField(max_length=100, blank=True)
     topic = models.CharField(max_length=100, blank=True)
 
     objects = UserManager()

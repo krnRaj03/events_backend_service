@@ -1,0 +1,104 @@
+{% extends 'panel/admin_home.html' %}
+
+{% load static %}
+
+{% block main %}
+<!-- AdminLTE -->
+
+<link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+<!-- BOOTSTRAP 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<!-- Datable Styles -->
+<style rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"></style>
+<style rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css"></style>
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Events</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">All Events</li>
+          </ol>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <table id="example" class="table table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Event Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Total Panels</th>
+          <th>Agenda</th>
+          <th>Event Type</th>
+          <th>View</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in events %}
+
+        <tr class="table-hover">
+          <td><b>{{e.event_name}}</b></td>
+          <td>{{e.start_date}}</td>
+          <td>{{e.end_date}}</td>
+          <td>{{e.number_of_panels}}</td>
+          <td>{{e.event_agenda}}</td>
+          <td>{{e.event_type}}</td>
+          <td><button class="btn btn-success btn-sm"><a href="{% url 'view_event' e.event_id %}"
+                style="color: aliceblue; text-decoration: none;">View</a></button></td>
+          <td> <button class="btn btn-primary btn-sm"><a href="{% url 'edit_event' e.event_id %}"
+                style="color: aliceblue; text-decoration: none;">Edit</a></button></td>
+          <td> <button class="btn btn-danger btn-sm"><a href="{% url 'delete_event' e.event_id %}"
+                style="color: aliceblue; text-decoration: none;">Delete</a></button></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+  </section>
+  <!-- /.content -->
+</div>
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+<!-- For dataTables -->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<!-- For exporting -->
+<script src="https://cdn.datatables.net/buttons/2.3.0/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.0/js/buttons.html5.min.js"></script>
+<script>
+  $(document).ready(function () {
+    new DataTable('#example', {
+      "info": true,
+      "ordering": true,
+      "paging": true,
+      "searching": true,
+      "lengthChange": true,
+      "scrollX": true,
+      "dom": 'Bfrtip',
+      "buttons": [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+
+    });
+  });
+</script>
+
+
+{% endblock %}

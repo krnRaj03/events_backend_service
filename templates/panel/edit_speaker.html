@@ -1,0 +1,108 @@
+{% extends 'panel/admin_home.html' %}
+
+{% load static %}
+
+{% block main %}
+<style>
+  /* Style for the form sections */
+  .form-section {
+    /* display: none; */
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+
+  /* Style for the active (open) form section */
+  .active {
+    display: block;
+  }
+</style>
+
+<link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Edit Event</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Edit Event</li>
+          </ol>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <!-- ADD EVENTS FORM -->
+    <form id="form1" method="post" class="form-section my-2" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row">
+
+        <div class="col-6">
+          <img src="{{speaker.user_image}}" alt="ticket_image" width="180pxx" height="200px"
+            style="margin-left: 20px; margin-bottom: 10px;">
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="first_name">First Name:</label>
+          <input type="text" id="first_name" class="form-control" name="first_name" value={{speaker.first_name}}><br>
+        </div>
+        <div class="col-6">
+          <label for="last_name">Last Name:</label>
+          <input type="text" id="last_name" class="form-control" name="last_name" value={{speaker.last_name}}><br>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <label for="job_title">Job Title:</label>
+          <input type="text" id="job_title" class="form-control" name="job_title" value={{speaker.job_title}}><br>
+        </div>
+        <div class="col-6">
+          <label for="work_place">Work Place:</label>
+          <input type="text" id="work_place" class="form-control" name="work_place" value={{speaker.work_place}}><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="speaker_image">Change image</label>
+          <input type="file" id="speaker_image" class="form-control" name="image"><br>
+        </div>
+        <div class="col-6">
+          <label for="mobile_no">Mobile Number</label>
+          <input type="text" id="mobile_no" class="form-control" name="mobile_no" value={{speaker.mobile_no}}><br>
+        </div>
+
+      </div>
+
+
+
+      <input type="submit" value="Update" class="btn btn-success" name="speaker_edit_form">
+    </form>
+
+  </section>
+  <!-- /.content -->
+</div>
+
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+
+
+
+{% endblock %}

@@ -16,7 +16,8 @@ class Organizer(models.Model):
     organizer_name = models.CharField(max_length=100)
     industry_type = models.CharField(max_length=50, choices=INDUSTRY_TYPE_CHOICES)
     organizer_email = models.EmailField(max_length=100)
-    organizer_mobile_no = models.CharField(max_length=10)
+    organizer_mobile_no = models.CharField(max_length=20)
+    organizer_image = models.URLField(max_length=200, blank=True, null=True)
     contact_person_name = models.CharField(max_length=100)
     contact_person_email = models.EmailField(max_length=100)
     contact_person_mobile_no = models.CharField(max_length=10)
@@ -27,8 +28,8 @@ class Organizer(models.Model):
     state = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
     pincode = models.CharField(max_length=100)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField()
+    date_updated = models.DateTimeField()
 
     def __str__(self):
         return self.organizer_name
@@ -36,9 +37,9 @@ class Organizer(models.Model):
 
 class Events(models.Model):
     EVENT_TYPE_CHOICES = (
-        ("technology", "Technology"),
-        ("finance", "Finance"),
-        ("healthcare", "Healthcare"),
+        ("conference", "Conference"),
+        ("forum", "Forum"),
+        ("exhibition", "Exhibition"),
         ("education", "Education"),
         ("other", "Other"),
     )
@@ -54,38 +55,75 @@ class Events(models.Model):
     end_date = models.DateTimeField()
     number_of_panels = models.IntegerField(blank=True, null=True)
     venue_link = models.URLField(max_length=200)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
+    venue_name = models.CharField(max_length=100, blank=True, null=True)
+    date_created = models.DateTimeField()
+    date_updated = models.DateTimeField()
     total_seats = models.IntegerField()
-    organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE)
+    organizer = models.ManyToManyField(Organizer)
     user = models.ManyToManyField(CustomUser)
 
     def __str__(self):
-        return str(self.events_name)
+        return str(self.event_name)
+
+
+class Panels(models.Model):
+    panel_id = models.AutoField(primary_key=True)
+    panel_no = models.IntegerField(null=True, blank=True)
+    panel_name = models.CharField(max_length=200)
+    panel_description = models.CharField(max_length=200)
+    panel_topic = models.CharField(max_length=200)
+    panel_image = models.URLField(max_length=200, blank=True, null=True)
+    panel_start_time = models.DateTimeField()
+    panel_end_time = models.DateTimeField()
+    date_created = models.DateTimeField()
+    date_updated = models.DateTimeField()
+    events = models.ForeignKey(Events, on_delete=models.CASCADE)
+    user = models.ManyToManyField(CustomUser)
+
+    def __str__(self):
+        return self.panel_name
 
 
 class TicketInfo(models.Model):
+    TICKET_TYPE_CHOICES = (
+        ("with_food", "With Food"),
+        ("without_food", "Without Food"),
+        ("online", "Online"),
+        ("guest", "GUEST"),
+    )
     ticket_id = models.AutoField(primary_key=True)
-    ticket_type = models.CharField(max_length=100)
+    ticket_type = models.CharField(max_length=100, choices=TICKET_TYPE_CHOICES)
+    ticket_type1 = models.CharField(
+        max_length=100, blank=True, null=True
+    )  # for future use
     ticket_price = models.IntegerField()
-    ticket_description = models.CharField(max_length=100)
+    ticket_image = models.URLField(max_length=200, blank=True, null=True)
+    ticket_description = models.CharField(max_length=100, blank=True, null=True)
+    ticket_start_date = models.DateTimeField(null=True, blank=True)
+    ticket_end_date = models.DateTimeField(null=True, blank=True)
     tickets_available = models.IntegerField()
-    tickets_sold = models.IntegerField()
-    tickets_scanned = models.IntegerField()
+    tickets_sold = models.IntegerField(blank=True, default=0)
+    tickets_scanned = models.IntegerField(blank=True, default=0)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     events = models.ForeignKey(Events, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.ticket_type
+        return (
+            self.events.event_name
+            + " , "
+            + self.ticket_type
+            + " , "
+            + str(self.ticket_price)
+        )
 
 
 class Sponsors(models.Model):
     SPONSOR_TYPE_CHOICES = (
-        ("technology", "Technology"),
-        ("media", "Media"),
-        ("technical", "Technical"),
-        ("strategic", "Strategic"),
+        ("sponsors", "Sponsors"),
+        ("main_sponsors", "Main Sponsors"),
+        ("partners", "Partners"),
+        ("media_partners", "Media Partners"),
     )
     sponsor_id = models.AutoField(primary_key=True)
     sponsor_type = models.CharField(max_length=50, choices=SPONSOR_TYPE_CHOICES)

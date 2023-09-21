@@ -267,7 +267,7 @@ def add_events(request):
 
     return render(
         request,
-        "panel/add_events.html",
+        "panel/create_events.html",
         {"organizers": organizers, "events": events, "panels": panels},
     )
 
